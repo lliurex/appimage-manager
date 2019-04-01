@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/x-appimage
+Actions=installAppimage
+
+[Desktop Action installAppimage]
+Name=Install Appimage
+TryExec=pkexec appimage-installer %u
+Exec=pkexec appimage-installer %u
+Icon=application
