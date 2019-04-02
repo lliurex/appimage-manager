@@ -1,2 +1,3 @@
-src/* /usr/bin/
+src/* /usr/share/appimage-manager/bin
+rsrc/* /usr/share/appimage-manager/rsrc
 common_files/services* /usr/share/kservices5/ServiceMenus/
