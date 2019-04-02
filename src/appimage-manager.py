@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayo
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize,pyqtSlot
 import gettext
+import subprocess
 gettext.textdomain('appimage-installer')
 _ = gettext.gettext
 
