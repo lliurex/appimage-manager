@@ -6,6 +6,5 @@ Actions=installAppimage
 
 [Desktop Action installAppimage]
 Name=Install Appimage
-TryExec=pkexec appimage-installer %u
-Exec=pkexec appimage-installer %u
-Icon=application
+Exec=appimage-manager install %u
+Icon=x-appimage
