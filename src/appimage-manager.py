@@ -44,7 +44,9 @@ def _generate_desktop(appimage,desktop):
 #		_debug(e)
 	return f_desktop
 #def _generate_desktop
-	
+
+def _render_preinstall(appimage):
+	pass
 
 def _render_gui(action,appimage):
 	appimage_name=os.path.basename(appimage).rstrip(".appimage")
@@ -135,10 +137,11 @@ elif action=="run":
 		subprocess.check_call([appimage])
 	except:
 		try:
-			subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
+			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
 		except Exception as e:
 			_debug(e)
 			_show_error(e)
 elif action=="preinstall":
+	_render_preinstall(appimage)
 	pass
 exit(0)
