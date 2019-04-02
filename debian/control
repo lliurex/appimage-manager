@@ -10,6 +10,6 @@ Homepage: http://lliurex.net
 
 Package: appimage-manager
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends} 
+Depends: ${python3:Depends} 
 Description: Appimage manager
 
