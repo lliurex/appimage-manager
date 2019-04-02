@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import os
-import shutil
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize,pyqtSlot
@@ -88,7 +87,8 @@ def _install(appimage,desktop):
 	_debug("Installing %s"%(appimage))
 	dst_path='/usr/local/bin/%s'%os.path.basename(sys.argv[1])
 	try:
-		shutil.copy2(appimage,dst_path)
+			#		shutil.copy2(appimage,dst_path)
+		subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,desktop])
 	except Exception as e:
 		_debug(e)
 		retval=False
@@ -129,12 +129,8 @@ if action=="install":
 else:
 	_debug("Executing %s"%appimage)
 	try:
-		os.chmod(appimage,0o744)
+		subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
 	except Exception as e:
 		_debug(e)
-		_show_error(e)
-	try:
-		subprocess.check_call([appimage])
-	except Exception as e:
 		_show_error(e)
 exit(0)
