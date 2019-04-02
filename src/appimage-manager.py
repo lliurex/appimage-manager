@@ -115,7 +115,11 @@ def _define_css():
 	
 err=0
 if len(sys.argv)==2:
-	action="run"
+	#Check if we want to run or install
+	if os.path.dirname(appimage)=="/usr/local/bin":
+		action="run"
+	else:
+		action="preinstall"
 	appimage=sys.argv[1]
 elif len(sys.argv)==3:
 	action="install"
@@ -125,11 +129,16 @@ else:
 	exit(1)
 if action=="install":
 	_render_gui(action,appimage)
-else:
+elif action=="run":
 	_debug("Executing %s"%appimage)
 	try:
-		subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
-	except Exception as e:
-		_debug(e)
-		_show_error(e)
+		subprocess.check_call([appimage])
+	except:
+		try:
+			subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
+		except Exception as e:
+			_debug(e)
+			_show_error(e)
+elif action=="preinstall":
+	pass
 exit(0)
