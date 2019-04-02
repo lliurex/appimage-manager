@@ -1,0 +1,26 @@
+[
+    {
+        "cmd": "/usr/share/appimage-manager/bin/appimage-helper.py",
+        "prefix": "net.lliurex.appimage-helper",
+        "nameaction": "appimage-helper",
+        "icon": "x-appimage",
+        "auths": [
+            {
+                "type": "group",
+                "members": [
+                    "teachers",
+                    "sudo"
+                ],
+                "any": "no",
+                "inactive": "no",
+                "active": "auth_self"
+            }
+        ],
+        "default_auth": {
+            "any": "no",
+            "inactive": "no",
+            "active": "no"
+        },
+        "requiredx": "false"
+    }
+]
