@@ -12,7 +12,7 @@ _ = gettext.gettext
 err=0
 dbg=True
 
-RSRC="/usr/share/appimage-installer/rsrc"
+RSRC="/usr/share/appimage-manager/rsrc"
 
 def _debug(msg):
 	if dbg:
@@ -29,19 +29,20 @@ def _show_error(msg):
 	dia.exec_()
 #def _show_error
 
-def _generate_desktop(desktop):
+def _generate_desktop(appimage,desktop):
 	retval=True
 	f_desktop="[Desktop Entry]\nVersion=1.0\nEncoding=UTF-8\nType=Application\n"
 	for key,value in desktop.items():
 		f_desktop+="%s=%s\n"%(key,value)
-	try:
-		_debug("/usr/share/applications/%s.desktop"%desktop['Name'])
-		with open ("/usr/share/applications/%s.desktop"%desktop['Name'],'w') as f:
-			f.writelines(f_desktop)
-	except Exception as e:
-		retval=False
-		_debug(e)
-	return retval
+	f_desktop+="%s=%s\n"%("Exec","/usr/local/bin/%s"%os.path.basename(appimage))
+#	try:
+#		_debug("/usr/share/applications/%s.desktop"%desktop['Name'])
+#		with open ("/usr/share/applications/%s.desktop"%desktop['Name'],'w') as f:
+#			f.writelines(f_desktop)
+#	except Exception as e:
+#		retval=False
+#		_debug(e)
+	return f_desktop
 #def _generate_desktop
 	
 
@@ -86,16 +87,13 @@ def _install(appimage,desktop):
 	
 	retval=True
 	_debug("Installing %s"%(appimage))
-	dst_path='/usr/local/bin/%s'%os.path.basename(sys.argv[1])
+	dst_path='/usr/local/bin/'
 	try:
 			#		shutil.copy2(appimage,dst_path)
-		subprocess.check_call(["/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,desktop])
+		subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,_generate_desktop(appimage,desktop)])
 	except Exception as e:
 		_debug(e)
 		retval=False
-	if retval:
-		_debug("Generating desktop...")
-		retval=_generate_desktop(desktop)
 	return (retval)
 #def _install
 
