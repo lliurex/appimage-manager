@@ -1,1 +1,2 @@
 src/* /usr/bin/
+common_files/services* /usr/share/kservices5/ServiceMenus/
