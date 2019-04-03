@@ -26,6 +26,7 @@ def _show_error(msg):
 	dia=QDIalog()
 	dia.setWindowTitle("Appimage Error")
 	lbl_err=QLabel("%s"%msg)
+	dia.show()
 	dia.exec_()
 #def _show_error
 
@@ -46,6 +47,21 @@ def _generate_desktop(appimage,desktop):
 #def _generate_desktop
 
 def _render_preinstall(appimage):
+	dia=QDIalog()
+	dia.setWindowTitle("Appimage Error")
+	lbl_err=QLabel("%s"%msg)
+	dia.show()
+	dia.exec_()
+	pass
+
+def _render_run(appimage):
+	msg=_("The appimage is not well installed. Do you want to fix errors and run it?")
+	app_run=QApplication()
+	dia=QDIalog()
+	dia.setWindowTitle("Appimage Error")
+	lbl_err=QLabel("%s"%msg)
+	dia.show()
+	app_run.exec_()
 	pass
 
 def _render_gui(action,appimage):
@@ -91,7 +107,6 @@ def _install(appimage,desktop):
 	_debug("Installing %s"%(appimage))
 	dst_path='/usr/local/bin/'
 	try:
-			#		shutil.copy2(appimage,dst_path)
 		subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,_generate_desktop(appimage,desktop)])
 	except Exception as e:
 		_debug(e)
@@ -114,21 +129,23 @@ def _define_css():
 	"""
 	return(css)
 #def _define_css
-	
+
+_debug("Init %s"%sys.argv)
 err=0
 if len(sys.argv)==2:
+	appimage=sys.argv[1]
 	#Check if we want to run or install
 	if os.path.dirname(appimage)=="/usr/local/bin":
 		action="run"
 	else:
 		action="preinstall"
-	appimage=sys.argv[1]
 elif len(sys.argv)==3:
-	action="install"
 	appimage=sys.argv[2]
+	action="install"
 else:
 	_debug("Bad argument %s"%sys.argv)
 	exit(1)
+_debug("Action %s"%action)
 if action=="install":
 	_render_gui(action,appimage)
 elif action=="run":
@@ -137,7 +154,8 @@ elif action=="run":
 		subprocess.check_call([appimage])
 	except:
 		try:
-			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
+			_render_run(appimage)
+#			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
 		except Exception as e:
 			_debug(e)
 			_show_error(e)
