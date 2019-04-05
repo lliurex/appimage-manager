@@ -178,7 +178,7 @@ class appManager(QWidget):
 			dia.accept()
 			
 		def _set_categories(categories):
-			filter_categories=['debian']
+			filter_categories=['debian','help']
 			for cat in categories:
 				if cat and cat not in filter_categories:
 					cmb_cat.addItem(_(cat))
