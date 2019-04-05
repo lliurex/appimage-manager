@@ -47,6 +47,7 @@ elif sys.argv[1]=='run':
 	os.chmod(appimage,0o744)
 	subprocess.check_call([appimage])
 elif sys.argv[1]=='remove':
-	pass
+	appimage=sys.argv[2]
+	os.remove(appimage)
 exit(err)
 

@@ -50,8 +50,10 @@ class appManager(QWidget):
 	def _render_gui(self,action="",appimage=""):
 		box=QGridLayout()
 		tab=QTabWidget()
-		tabInstall=self._render_install(action,appimage)
-		tab.addTab(tabInstall,_("Install"))
+		print(action)
+		if action=="install":
+			tabInstall=self._render_install(action,appimage)
+			tab.addTab(tabInstall,_("Install"))
 		tabManager=self._render_manager()
 		tab.addTab(tabManager,_("Manage"))
 		img_banner=QLabel()
@@ -69,6 +71,12 @@ class appManager(QWidget):
 		self.show()
 
 	def _render_manager(self):
+		def _begin_remove(appimage):
+			appimage="/usr/local/bin/%s"%appimage
+			self._remove_appimage(appimage)
+		def _begin_run(appimage):
+			appimage="/usr/local/bin/%s"%appimage
+			self._run_appimage(appimage)
 		self._debug("Loading manager...")
 		tabManager=QWidget()
 		tabManager.setStyleSheet(self._managerCss())
@@ -80,15 +88,19 @@ class appManager(QWidget):
 		for app in os.listdir("/usr/local/bin"):
 			if app.endswith(".appimage"):
 				appBox=QHBoxLayout()
-				lbl=QLabel(app)
+				lbl=QLabel(app.replace(".appimage",""))
 				btn_remove=QPushButton()
 				btn_remove.setIcon(icn_trash)
 				btn_remove.setIconSize(QSize(48,48))
 				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
+				btn_remove.setToolTip(_("Remove %s"%app)
+				btn_remove.clicked.connect(lambda: _begin_remove(app))
 				btn_run=QPushButton()
 				btn_run.setIcon(icn_run)
 				btn_run.setIconSize(QSize(48,48))
 				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
+				btn_run.setToolTip(_("Execute %s"%app)
+				btn_run.clicked.connect(lambda: _begin_run(app))
 				appBox.addWidget(lbl,1,Qt.Alignment(0))
 				appBox.addWidget(btn_run,0,Qt.Alignment(2))
 				appBox.addWidget(btn_remove,0,Qt.Alignment(2))
@@ -97,7 +109,6 @@ class appManager(QWidget):
 
 		tabManager.setLayout(box)
 		return(tabManager)
-		pass
 
 	def _render_install(self,action="",appimage=""):
 		appimage_name=os.path.basename(appimage).rstrip(".appimage")
@@ -115,6 +126,7 @@ class appManager(QWidget):
 			else:
 				desktop['icon']='x-appimage'
 			print("D: %s"%desktop)
+			btn_desktop.setToolTip(_("Name: %s\nDescription: %s\nIcon: %s\nCategory: %s")%(desktop['name'],desktop['comment'],desktop['icon'],desktop['categories']))
 #			btn_action.disconnect()
 #			btn_action.clicked.connect(lambda: self._install(appimage,desktop))
 
@@ -126,6 +138,7 @@ class appManager(QWidget):
 		btn_desktop=QPushButton("")
 		btn_desktop.setObjectName("menuButton")
 		lbl_desktop=QLabel(_("Push button to set the icon,\n name and category for the app\n or use default ones"))
+		btn_desktop.setToolTip(_("Name: %s\nDescription: %s\nIcon: %s\nCategory: %s")%(desktop['name'],desktop['comment'],desktop['icon'],desktop['categories']))
 		deskbox.addWidget(lbl_desktop,1,Qt.Alignment(0))
 		icn_desktop=QtGui.QIcon.fromTheme("x-appimage")
 		img_desktop=QLabel()
@@ -143,6 +156,7 @@ class appManager(QWidget):
 		img_action.setPixmap(icn_action.pixmap(QSize(64,64)))
 		actionbox.addWidget(img_action,0,Qt.Alignment(2))
 		btn_action.setLayout(actionbox)
+		btn_action.setToolTip(_("Install appimage"))
 		btn_action.clicked.connect(lambda: self._install(appimage,desktop))
 		box.addWidget(btn_desktop)
 		box.addWidget(btn_action)
@@ -268,8 +282,24 @@ class appManager(QWidget):
 		return (retval)
 	#def _install
 
-	def _remove(appimage):
-		pass
+	def _remove_appimage(self,appimage):
+		try:
+			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","remove",appimage])
+			self._show_message(_("Removed %s"%appimage))
+		except Exception as e:
+			self._show_message(_("Error removing %s"%appimage))
+	#def _remove
+	
+	def _run_appimage(self,appimage):
+		try:
+			subprocess.check_call([appimage])
+		except Exception as e:
+			self._debug("Error running: %s"%e)
+			try:
+				subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
+			except Exception as e:
+				self._show_message(_("Error executing %s"%appimage))
+				print(e)
 	#def _remove
 
 	def _generate_desktop(self,appimage,desktop):
@@ -335,14 +365,17 @@ action=""
 appimage=""
 print(sys.argv)
 if len(sys.argv)==2:
-	appimage=sys.argv[1]
-	action="run"
+	if sys.argv[1] in ["install","manage"]:
+		action=sys.argv[1]
+	else:
+		appimage=sys.argv[1]
+		action="run"
 elif len(sys.argv)==3:
 	appimage=sys.argv[2]
 	action="install"
 else:
 	exit(1)
-if action=="install":
+if action=="install" or action=='manage':
 	app=QApplication([])
 	appimageManager=appManager(action,appimage)
 	app.instance().setStyleSheet(_define_css())
