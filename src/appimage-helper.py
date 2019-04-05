@@ -22,8 +22,9 @@ if sys.argv[1]=='install':
 	desktop_comment=sys.argv[6]
 	desktop_categories=["%s"%sys.argv[7]]
 	desktop_exe=sys.argv[8]
+	_debug("Name: %s\nIcon: %s"%(desktop_name,desktop_icon))
 	#install app
-	os.chmod(appimage,0o777)
+	os.chmod(appimage,0o755)
 	shutil.copy2(appimage,path)
 	#Generate desktop
 	menu=App2Menu.app2menu()

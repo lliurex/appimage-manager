@@ -3,9 +3,9 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,\
 				QDialog,QStackedWidget,QGridLayout,QTabWidget,QHBoxLayout,QFormLayout,QLineEdit,QComboBox,\
-				QStatusBar
+				QStatusBar,QFileDialog,QDialogButtonBox
 from PyQt5 import QtGui
-from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer
+from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer,pyqtSignal
 import gettext
 import subprocess
 from app2menu import App2Menu
@@ -15,6 +15,19 @@ _ = gettext.gettext
 
 
 RSRC="/usr/share/appimage-manager/rsrc"
+
+class th_getCategories(QThread):
+	signal=pyqtSignal("PyQt_PyObject")
+	def __init__(self):
+		QThread.__init__(self)
+
+	def __del__(self):
+		self.wait()
+
+	def run(self):
+		menu=App2Menu.app2menu()
+		categories=menu.get_categories()
+		self.signal.emit(categories)
 
 class appManager(QWidget):
 
@@ -87,24 +100,49 @@ class appManager(QWidget):
 		pass
 
 	def _render_install(self,action="",appimage=""):
+		appimage_name=os.path.basename(appimage).rstrip(".appimage")
+		desktop={'icon':'x-appimage','name':appimage_name,'comment':'','categories':'Utility'}
+		def _begin_render_desktop(f_desktop):
+			nonlocal desktop
+			(f_desktop,status)=self._render_desktop_dialog(f_desktop)
+			desktop=f_desktop
+			if desktop['icon']:
+				if os.path.isfile(desktop['icon']):
+					icn=QtGui.QIcon(desktop['icon'])
+				else:
+					icn=QtGui.QIcon.fromTheme(desktop['icon'])
+				img_desktop.setPixmap(icn.pixmap(QSize(64,64)))
+			else:
+				desktop['icon']='x-appimage'
+			print("D: %s"%desktop)
+#			btn_action.disconnect()
+#			btn_action.clicked.connect(lambda: self._install(appimage,desktop))
+
 		self._debug("Loading installer...")
 		tabInstall=QWidget()
-		appimage_name=os.path.basename(appimage).rstrip(".appimage")
-		desktop={'icon':'x-appimage','name':appimage_name,'comment':'','category':'Other'}
 		self.setWindowTitle("Appimage Manager")
 		box=QVBoxLayout()
-		img_banner=QLabel()
+		deskbox=QHBoxLayout()
+		btn_desktop=QPushButton("")
+		btn_desktop.setObjectName("menuButton")
+		lbl_desktop=QLabel(_("Push button to set the icon,\n name and category for the app\n or use default ones"))
+		deskbox.addWidget(lbl_desktop,1,Qt.Alignment(0))
 		icn_desktop=QtGui.QIcon.fromTheme("x-appimage")
-		btn_desktop=QPushButton(_("Push button to set the icon,\n name and category for the app\n or use default ones"))
-		btn_desktop.setIcon(icn_desktop)
-		btn_desktop.setIconSize(QSize(64,64))
-		btn_desktop.setLayoutDirection(1)
-		btn_desktop.clicked.connect(lambda: self._render_desktop_dialog(desktop))
+		img_desktop=QLabel()
+		img_desktop.setPixmap(icn_desktop.pixmap(QSize(64,64)))
+		deskbox.addWidget(img_desktop,0,Qt.Alignment(2))
+		btn_desktop.setLayout(deskbox)
+		btn_desktop.clicked.connect(lambda: _begin_render_desktop(desktop))
+		actionbox=QHBoxLayout()
+		btn_action=QPushButton("")
+		btn_action.setObjectName("menuButton")
+		lbl_action=QLabel(_("%s the application %s")%(action.capitalize(),appimage_name))
+		actionbox.addWidget(lbl_action,1,Qt.Alignment(0))
 		icn_action=QtGui.QIcon.fromTheme("system-run")
-		btn_action=QPushButton(_("%s the application %s")%(action.capitalize(),appimage_name))
-		btn_action.setIcon(icn_action)
-		btn_action.setIconSize(QSize(64,64))
-		btn_action.setLayoutDirection(1)
+		img_action=QLabel()
+		img_action.setPixmap(icn_action.pixmap(QSize(64,64)))
+		actionbox.addWidget(img_action,0,Qt.Alignment(2))
+		btn_action.setLayout(actionbox)
 		btn_action.clicked.connect(lambda: self._install(appimage,desktop))
 		box.addWidget(btn_desktop)
 		box.addWidget(btn_action)
@@ -114,19 +152,48 @@ class appManager(QWidget):
 
 	@pyqtSlot()
 	def _render_desktop_dialog(self,desktop):
+		categories=[]
+		fdia=QFileDialog()
+		icon="x-appimage"
+		def _file_chooser():
+			fdia.setFileMode(QFileDialog.AnyFile)
+			fdia.setNameFilter(_("images(*.png *.xpm *jpg)"))
+			if (fdia.exec_()):
+				icon=fdia.selectedFiles()[0]
+				icn=QtGui.QIcon(icon)
+				btn_icon.setIcon(icn)
+
 		def _begin_save_desktop():
 			name=inp_name.text()
-			icon=inp_icon.text()
 			comment=inp_desc.text()
 			categories=cmb_cat.currentText()
-			self._save_desktop_info(name,icon,comment,categories,exe)
+			desktop['name']=name
+			if fdia.selectedFiles():
+				icon=fdia.selectedFiles()[0]
+			else:
+				icon='x-appimage'
+			desktop['icon']=icon
+			desktop['comment']=comment
+			desktop['categories']=categories
+			dia.accept()
 			
+		def _set_categories(categories):
+			filter_categories=['debian']
+			for cat in categories:
+				if cat and cat not in filter_categories:
+					cmb_cat.addItem(_(cat))
+			cmb_cat.adjustSize()
 		dia=QDialog()
 		dia.setWindowTitle("Appimage Desktop Definition")
 		box=QFormLayout()
 		lbl_icon=QLabel(_("Select icon: "))
 		inp_icon=QLineEdit(desktop['icon'])
-		box.addRow(lbl_icon,inp_icon)
+		btn_icon=QPushButton()
+		icn_desktop=QtGui.QIcon.fromTheme(icon)
+		btn_icon.setIcon(icn_desktop)
+		btn_icon.setIconSize(QSize(64,64))
+		btn_icon.clicked.connect(_file_chooser)
+		box.addRow(lbl_icon,btn_icon)
 		lbl_name=QLabel(_("Set name: "))
 		inp_name=QLineEdit(desktop['name'])
 		box.addRow(lbl_name,inp_name)
@@ -135,24 +202,23 @@ class appManager(QWidget):
 		box.addRow(lbl_desc,inp_desc)
 		lbl_cat=QLabel(_("Set category: "))
 		cmb_cat=QComboBox()
-		menu=App2Menu.app2menu()
-		categories=menu.get_categories()
-		for cat in categories:
-			cmb_cat.addItem(cat)
+		cmb_cat.setSizeAdjustPolicy(0)
+		th_categories=th_getCategories()
+		th_categories.start()
+		th_categories.signal.connect(_set_categories)
 		box.addRow(lbl_cat,cmb_cat)
-		icn_apply=QtGui.QIcon.fromTheme("system-run")
-		btn_apply=QPushButton(_("Apply"))
-		btn_apply.clicked.connect(lambda: _begin_save_desktop(desktop))
-		icn_cancel=QtGui.QIcon.fromTheme("system-run")
-		btn_cancel=QPushButton(_("Cancel"))
-		box.addRow(btn_apply,btn_cancel)
+		btnBox=QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+		btnBox.rejected.connect(dia.reject)
+		btnBox.accepted.connect(_begin_save_desktop)
+#		box.addRow(btn_apply,btn_cancel)
+		box.addRow(btnBox)
 		dia.setLayout(box)
 		dia.show()
-		dia.exec_()
-		return desktop
+		result=dia.exec_()
+		return (desktop,result==QDialog.Accepted)
 	#def _render_desktop_dialog
 
-	def _show_message(self,msg):
+	def _show_message(self,msg,css=None):
 		def hide_message():
 			timer=1000
 			self.anim.setDuration(timer)
@@ -160,7 +226,10 @@ class appManager(QWidget):
 			self.anim.setEndValue(QRect(0,0,self.width()-10,0))
 			self.anim.start()
 			self.timer.singleShot(timer, lambda:self.statusBar.hide())
-
+		if css:
+			self.statusBar.setStyleSheet("""QStatusBar{%s;}"""%css)
+		else:
+			self.statusBar.setStyleSheet("""QStatusBar{background:red;}""")
 		self.statusBar.showMessage("%s"%msg)
 		self.anim.setDuration(1000)
 		self.anim.setLoopCount(1)
@@ -182,13 +251,6 @@ class appManager(QWidget):
 		self.anim.setEndValue(QRect(0,0,self.width()-10,0))
 		self.anim.start()
 
-	def _save_desktop_info(self,name,icon,comment,categories,exe):
-		self.desktop['name']=name
-		self.desktop['icon']=icon
-		self.desktop['comment']=comment
-		self.desktop['categories']=categories
-		self.desktop['exe']=exe
-
 	@pyqtSlot()
 	def _install(self,appimage,desktop):
 		
@@ -196,8 +258,9 @@ class appManager(QWidget):
 		self._debug("Installing %s"%(appimage))
 		dst_path='/usr/local/bin/'
 		try:
-			(name,icon,comment,categories,exe)=self._generate_desktop(appimage)
+			(name,icon,comment,categories,exe)=self._generate_desktop(appimage,desktop)
 			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,name,icon,comment,categories,exe])
+			self._show_message(_("%s installed"%name),"background:blue")
 		except Exception as e:
 			self._debug(e)
 			retval=False
@@ -209,14 +272,15 @@ class appManager(QWidget):
 		pass
 	#def _remove
 
-	def _generate_desktop(self,appimage):
-		desktop={}
-		desktop=self.desktop.copy()
+	def _generate_desktop(self,appimage,desktop):
 		desktop['exe']=("/usr/local/bin/%s"%os.path.basename(appimage))
-		if not self.desktop:
+		if 'name' not in desktop.keys() or not desktop['name']:
 			desktop['name']=os.path.basename(appimage).rstrip(".appimage")
+		if 'comment' not in desktop.keys() or not desktop['comment']:
 			desktop['comment']='%s appimage'%desktop['name']
+		if 'icon' not in desktop.keys() or not desktop['icon']:
 			desktop['icon']='x-appimage'
+		if 'categories' not in desktop.keys() or not desktop['categories']:
 			desktop['categories']='Utility'
 		self._debug("Desktop info loaded")
 		return(desktop['name'],desktop['icon'],desktop['comment'],desktop['categories'],desktop['exe'])
@@ -236,6 +300,9 @@ class appManager(QWidget):
 
 def _define_css():
 	css="""
+	QPushButton#menuButton{
+		height:72px;
+	}
 	QPushButton{
 		padding: 6px;
 		margin:6px;
@@ -254,6 +321,10 @@ def _define_css():
 		color:white;
 		font: 14px Roboto bold;
 	}
+	QLabel{
+		padding:6px;
+		margin:6px;
+	}
 	"""
 	return(css)
 	#def _define_css
@@ -262,40 +333,26 @@ def _define_css():
 err=0
 action=""
 appimage=""
+print(sys.argv)
 if len(sys.argv)==2:
 	appimage=sys.argv[1]
-	#Check if we want to run or install
-	if os.path.dirname(appimage)=="/usr/local/bin":
-		action="run"
-	else:
-		action="preinstall"
+	action="run"
 elif len(sys.argv)==3:
 	appimage=sys.argv[2]
 	action="install"
-#else:
-#	_debug("Bad argument %s"%sys.argv)
-#	exit(1)
-#_debug("Action %s"%action)
-#if action=="install":
-#	_render_gui(action,appimage)
-#elif action=="run":
-#	_debug("Executing %s"%appimage)
-#	try:
-#		subprocess.check_call([appimage])
-#	except:
-#		try:
-#			_render_run(appimage)
-##			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
-#		except Exception as e:
-#			_debug(e)
-#			_show_error(e)
-#elif action=="preinstall":
-#	_render_preinstall(appimage)
-#	pass
-#exit(0)
-app=QApplication([])
-print("Action %s"%action)
-print("Appimage %s"%appimage)
-appimageManager=appManager(action,appimage)
-app.instance().setStyleSheet(_define_css())
-app.exec_()
+else:
+	exit(1)
+if action=="install":
+	app=QApplication([])
+	appimageManager=appManager(action,appimage)
+	app.instance().setStyleSheet(_define_css())
+	app.exec_()
+elif action=="run":
+	try:
+		os.chmod(appimage,0o755)
+		subprocess.check_call([appimage])
+	except:
+		try:
+			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
+		except Exception as e:
+			print(e)
