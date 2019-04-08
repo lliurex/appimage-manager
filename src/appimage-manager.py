@@ -3,7 +3,7 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,\
 				QDialog,QStackedWidget,QGridLayout,QTabWidget,QHBoxLayout,QFormLayout,QLineEdit,QComboBox,\
-				QStatusBar,QFileDialog,QDialogButtonBox
+				QStatusBar,QFileDialog,QDialogButtonBox,QScrollBar,QScrollArea
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer,pyqtSignal
 import gettext
@@ -15,6 +15,30 @@ _ = gettext.gettext
 
 
 RSRC="/usr/share/appimage-manager/rsrc"
+
+class th_runApp(QThread):
+	signal=pyqtSignal("PyQt_PyObject")
+	def __init__(self,appimage):
+		QThread.__init__(self)
+		self.appimage=appimage
+
+	def __del__(self):
+		self.wait()
+		pass
+
+	def run(self):
+		retval=False
+		print("Launching thread...")
+		try:
+			subprocess.run([self.appimage],stdin=None,stdout=None,stderr=None,shell=True)
+		except Exception as e:
+			print("Error running: %s"%e)
+			try:
+				subprocess.Popen(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",self.appimage],stdin=None,stdout=None,stderr=None)
+			except Exception as e:
+				retval=True
+				print(e)
+		self.signal.emit(retval)
 
 class th_getCategories(QThread):
 	signal=pyqtSignal("PyQt_PyObject")
@@ -51,11 +75,11 @@ class appManager(QWidget):
 		box=QGridLayout()
 		tab=QTabWidget()
 		print(action)
-		if action=="install":
-			tabInstall=self._render_install(action,appimage)
-			tab.addTab(tabInstall,_("Install"))
-		tabManager=self._render_manager()
-		tab.addTab(tabManager,_("Manage"))
+		tabInstall=self._render_install(action,appimage)
+		tab.addTab(tabInstall,_("Install"))
+		if action=="manage":
+			tabManager=self._render_manager()
+			tab.addTab(tabManager,_("Manage"))
 		img_banner=QLabel()
 		img=QtGui.QPixmap("%s/appimage_banner.png"%RSRC)
 		img_banner.setPixmap(img)
@@ -71,16 +95,24 @@ class appManager(QWidget):
 		self.show()
 
 	def _render_manager(self):
+		dict_position={}
 		def _begin_remove(appimage):
 			appimage="/usr/local/bin/%s"%appimage
-			self._remove_appimage(appimage)
+			if self._remove_appimage(appimage):
+				print(dict_position[lbl])
 		def _begin_run(appimage):
+				#				self._show_message(_("Error executing %s"%appimage))
 			appimage="/usr/local/bin/%s"%appimage
 			self._run_appimage(appimage)
 		self._debug("Loading manager...")
 		tabManager=QWidget()
+		scrollArea=QScrollArea(tabManager)
+		scrollArea.setGeometry(QRect(0,0,620,245))
 		tabManager.setStyleSheet(self._managerCss())
 		box=QGridLayout()
+		tabScrolled=QWidget()
+		tabScrolled.setObjectName("scrollbox")
+		scrollArea.setObjectName("scrollbox")
 		row=0
 		col=0
 		icn_trash=QtGui.QIcon("%s/trash.svg"%RSRC)
@@ -93,21 +125,25 @@ class appManager(QWidget):
 				btn_remove.setIcon(icn_trash)
 				btn_remove.setIconSize(QSize(48,48))
 				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
-				btn_remove.setToolTip(_("Remove %s"%app)
-				btn_remove.clicked.connect(lambda: _begin_remove(app))
+				btn_remove.setToolTip(_("Remove %s"%app))
+#				btn_remove.clicked.connect(lambda: _begin_remove(app,lbl))
+				btn_remove.clicked.connect(lambda: self._remove_appimage(app))
 				btn_run=QPushButton()
 				btn_run.setIcon(icn_run)
 				btn_run.setIconSize(QSize(48,48))
 				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
-				btn_run.setToolTip(_("Execute %s"%app)
+				btn_run.setToolTip(_("Execute %s"%app))
 				btn_run.clicked.connect(lambda: _begin_run(app))
 				appBox.addWidget(lbl,1,Qt.Alignment(0))
 				appBox.addWidget(btn_run,0,Qt.Alignment(2))
 				appBox.addWidget(btn_remove,0,Qt.Alignment(2))
+				dict_position.update({lbl:row})
 				box.addLayout(appBox,row,col)
 				row+=1
-
-		tabManager.setLayout(box)
+		tabScrolled.setLayout(box)
+		scrollArea.setWidget(tabScrolled)
+		scrollArea.alignment()
+		scrollArea.setWidgetResizable(True)
 		return(tabManager)
 
 	def _render_install(self,action="",appimage=""):
@@ -125,10 +161,19 @@ class appManager(QWidget):
 				img_desktop.setPixmap(icn.pixmap(QSize(64,64)))
 			else:
 				desktop['icon']='x-appimage'
-			print("D: %s"%desktop)
 			btn_desktop.setToolTip(_("Name: %s\nDescription: %s\nIcon: %s\nCategory: %s")%(desktop['name'],desktop['comment'],desktop['icon'],desktop['categories']))
-#			btn_action.disconnect()
-#			btn_action.clicked.connect(lambda: self._install(appimage,desktop))
+
+		def _select_appimage():
+			fdia=QFileDialog()
+			fdia.setFileMode(QFileDialog.AnyFile)
+			fdia.setNameFilter("appimages(*.appimage)")
+			if (fdia.exec_()):
+				appimage=fdia.selectedFiles()[0]
+				appimage_name=os.path.basename(appimage).rstrip(".appimage")
+				action="install"
+				lbl_action.setText(_("%s the application %s")%(action.capitalize(),appimage_name))
+				btn_action.disconnect()
+				btn_action.clicked.connect(lambda: self._install(appimage,desktop))
 
 		self._debug("Loading installer...")
 		tabInstall=QWidget()
@@ -149,7 +194,12 @@ class appManager(QWidget):
 		actionbox=QHBoxLayout()
 		btn_action=QPushButton("")
 		btn_action.setObjectName("menuButton")
-		lbl_action=QLabel(_("%s the application %s")%(action.capitalize(),appimage_name))
+		if appimage:
+			lbl_action=QLabel(_("%s the application %s")%(action.capitalize(),appimage_name))
+			btn_action.clicked.connect(lambda: self._install(appimage,desktop))
+		else:
+			lbl_action=QLabel(_("Press button to select an appimage for install"))
+			btn_action.clicked.connect(_select_appimage)
 		actionbox.addWidget(lbl_action,1,Qt.Alignment(0))
 		icn_action=QtGui.QIcon.fromTheme("system-run")
 		img_action=QLabel()
@@ -157,7 +207,6 @@ class appManager(QWidget):
 		actionbox.addWidget(img_action,0,Qt.Alignment(2))
 		btn_action.setLayout(actionbox)
 		btn_action.setToolTip(_("Install appimage"))
-		btn_action.clicked.connect(lambda: self._install(appimage,desktop))
 		box.addWidget(btn_desktop)
 		box.addWidget(btn_action)
 		self._debug("gui launched")
@@ -283,23 +332,24 @@ class appManager(QWidget):
 	#def _install
 
 	def _remove_appimage(self,appimage):
+		retval=False
 		try:
 			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","remove",appimage])
 			self._show_message(_("Removed %s"%appimage))
+			retval=True
 		except Exception as e:
 			self._show_message(_("Error removing %s"%appimage))
+		return retval
 	#def _remove
 	
 	def _run_appimage(self,appimage):
-		try:
-			subprocess.check_call([appimage])
-		except Exception as e:
-			self._debug("Error running: %s"%e)
-			try:
-				subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",appimage])
-			except Exception as e:
+		def _run_result(result):
+			if result:
 				self._show_message(_("Error executing %s"%appimage))
-				print(e)
+
+		th_run=th_runApp(appimage)
+		th_run.start()
+		th_run.signal.connect(_run_result)
 	#def _remove
 
 	def _generate_desktop(self,appimage,desktop):
@@ -324,6 +374,10 @@ class appManager(QWidget):
 			font=14px Roboto;
 			margin: 6px;
 			padding:6px;
+		}
+		#scrollbox{
+			border:0px 0px 0px 0px;
+			margin:0px;
 		}
 		"""
 		return(css)
@@ -363,18 +417,19 @@ def _define_css():
 err=0
 action=""
 appimage=""
-print(sys.argv)
-if len(sys.argv)==2:
-	if sys.argv[1] in ["install","manage"]:
-		action=sys.argv[1]
-	else:
-		appimage=sys.argv[1]
-		action="run"
-elif len(sys.argv)==3:
-	appimage=sys.argv[2]
-	action="install"
-else:
-	exit(1)
+args=sys.argv[1:]
+while args:
+	arg=args.pop()
+	if os.path.isfile(arg):
+		appimage=arg
+	elif "-m"==arg or "--manage"==arg:
+		action="manage"
+	elif "-i"==arg or "--install"==argv:
+		action="install"
+if appimage and not action:
+	action="run"
+elif not appimage:
+	action="manage"
 if action=="install" or action=='manage':
 	app=QApplication([])
 	appimageManager=appManager(action,appimage)

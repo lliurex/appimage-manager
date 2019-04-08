@@ -44,7 +44,7 @@ if sys.argv[1]=='install':
 	_debug("Installed %s %s"%(sys.argv[2],sys.argv[3]))
 elif sys.argv[1]=='run':
 	appimage=sys.argv[2]
-	os.chmod(appimage,0o744)
+	os.chmod(appimage,0o755)
 	subprocess.check_call([appimage])
 elif sys.argv[1]=='remove':
 	appimage=sys.argv[2]
