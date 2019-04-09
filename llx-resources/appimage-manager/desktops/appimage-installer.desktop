@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Appimage Installer
+Name[ca_ES.UTF-8@valencia]=Instal·lador de appimages
+Name[ca_ES@valencia]=Instal·lador de appimages
+Name[ca]=Instal·lador de appimages
+Name[es]=Instalador de appimages
+Comment=Install appimages
+Comment[ca_ES.UTF-8@valencia]=Instal·la appimages al sistema
+Comment[ca]=Instal·la appimages al sistema
+Comment[ca_ES@valencia]=Instal·la appimages al sistema
+Comment[es]=Gestiona las appimages del sistema
+Exec=/usr/bin/appimage-manager -i %U
+Terminal=false
+MimeType=application/vnd.appimage;application/x-iso9660-appimage
+Type=Application
+Icon=x-appimage
+NoDisplay=true
+Comment=
+Categories=
