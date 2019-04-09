@@ -5,10 +5,11 @@ from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayo
 				QDialog,QStackedWidget,QGridLayout,QTabWidget,QHBoxLayout,QFormLayout,QLineEdit,QComboBox,\
 				QStatusBar,QFileDialog,QDialogButtonBox,QScrollBar,QScrollArea
 from PyQt5 import QtGui
-from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer,pyqtSignal
+from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer,pyqtSignal,QSignalMapper
 import gettext
 import subprocess
 from app2menu import App2Menu
+QString=type("")
 
 gettext.textdomain('appimage-manager')
 _ = gettext.gettext
@@ -18,8 +19,8 @@ RSRC="/usr/share/appimage-manager/rsrc"
 
 class th_runApp(QThread):
 	signal=pyqtSignal("PyQt_PyObject")
-	def __init__(self,appimage):
-		QThread.__init__(self)
+	def __init__(self,appimage,parent=None):
+		QThread.__init__(self,parent)
 		self.appimage=appimage
 
 	def __del__(self):
@@ -30,14 +31,16 @@ class th_runApp(QThread):
 		retval=False
 		print("Launching thread...")
 		try:
-			subprocess.run([self.appimage],stdin=None,stdout=None,stderr=None,shell=True)
+			subprocess.Popen([self.appimage],stdin=None,stdout=None,stderr=None,shell=False)
+			retval=True
 		except Exception as e:
 			print("Error running: %s"%e)
 			try:
-				subprocess.Popen(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",self.appimage],stdin=None,stdout=None,stderr=None)
-			except Exception as e:
+				subprocess.Popen(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","run",self.appimage],shell=False)
 				retval=True
-				print(e)
+			except Exception as e:
+				retval=False
+				print("Error pkexec: %s"%e)
 		self.signal.emit(retval)
 
 class th_getCategories(QThread):
@@ -74,12 +77,11 @@ class appManager(QWidget):
 	def _render_gui(self,action="",appimage=""):
 		box=QGridLayout()
 		tab=QTabWidget()
-		print(action)
-		tabInstall=self._render_install(action,appimage)
-		tab.addTab(tabInstall,_("Install"))
 		if action=="manage":
 			tabManager=self._render_manager()
 			tab.addTab(tabManager,_("Manage"))
+		tabInstall=self._render_install(action,appimage)
+		tab.addTab(tabInstall,_("Install"))
 		img_banner=QLabel()
 		img=QtGui.QPixmap("%s/appimage_banner.png"%RSRC)
 		img_banner.setPixmap(img)
@@ -97,11 +99,14 @@ class appManager(QWidget):
 	def _render_manager(self):
 		dict_position={}
 		def _begin_remove(appimage):
+			self._debug("Removing %s"%appimage)
 			appimage="/usr/local/bin/%s"%appimage
 			if self._remove_appimage(appimage):
-				print(dict_position[lbl])
+				self._show_message(_("Removed %s"%appimage))
+			else:
+				self._show_message(_("Error removing %s"%appimage))
 		def _begin_run(appimage):
-				#				self._show_message(_("Error executing %s"%appimage))
+			self._debug("Executing %s"%appimage)
 			appimage="/usr/local/bin/%s"%appimage
 			self._run_appimage(appimage)
 		self._debug("Loading manager...")
@@ -117,6 +122,8 @@ class appManager(QWidget):
 		col=0
 		icn_trash=QtGui.QIcon("%s/trash.svg"%RSRC)
 		icn_run=QtGui.QIcon("%s/run.svg"%RSRC)
+		sigmap_run=QSignalMapper(self)
+		sigmap_remove=QSignalMapper(self)
 		for app in os.listdir("/usr/local/bin"):
 			if app.endswith(".appimage"):
 				appBox=QHBoxLayout()
@@ -126,20 +133,25 @@ class appManager(QWidget):
 				btn_remove.setIconSize(QSize(48,48))
 				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
 				btn_remove.setToolTip(_("Remove %s"%app))
-#				btn_remove.clicked.connect(lambda: _begin_remove(app,lbl))
-				btn_remove.clicked.connect(lambda: self._remove_appimage(app))
+				sigmap_remove.setMapping(btn_remove,app)
+				btn_remove.clicked.connect(sigmap_remove.map)
 				btn_run=QPushButton()
 				btn_run.setIcon(icn_run)
 				btn_run.setIconSize(QSize(48,48))
 				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
 				btn_run.setToolTip(_("Execute %s"%app))
-				btn_run.clicked.connect(lambda: _begin_run(app))
+				btn_run.setObjectName(str(row))
+				sigmap_run.setMapping(btn_run,app)
+				btn_run.clicked.connect(sigmap_run.map)
 				appBox.addWidget(lbl,1,Qt.Alignment(0))
 				appBox.addWidget(btn_run,0,Qt.Alignment(2))
 				appBox.addWidget(btn_remove,0,Qt.Alignment(2))
 				dict_position.update({lbl:row})
 				box.addLayout(appBox,row,col)
 				row+=1
+		sigmap_run.mapped[QString].connect(_begin_run)
+		sigmap_remove.mapped[QString].connect(_begin_remove)
+
 		tabScrolled.setLayout(box)
 		scrollArea.setWidget(tabScrolled)
 		scrollArea.alignment()
@@ -335,16 +347,16 @@ class appManager(QWidget):
 		retval=False
 		try:
 			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","remove",appimage])
-			self._show_message(_("Removed %s"%appimage))
 			retval=True
 		except Exception as e:
-			self._show_message(_("Error removing %s"%appimage))
+			self._debug("Removing: %s"%e)
 		return retval
 	#def _remove
 	
 	def _run_appimage(self,appimage):
 		def _run_result(result):
-			if result:
+			return result
+			if result==False:
 				self._show_message(_("Error executing %s"%appimage))
 
 		th_run=th_runApp(appimage)
