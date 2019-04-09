@@ -3,7 +3,8 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,\
 				QDialog,QStackedWidget,QGridLayout,QTabWidget,QHBoxLayout,QFormLayout,QLineEdit,QComboBox,\
-				QStatusBar,QFileDialog,QDialogButtonBox,QScrollBar,QScrollArea
+				QStatusBar,QFileDialog,QDialogButtonBox,QScrollBar,QScrollArea,QCheckBox,QTableWidget,\
+				QTableWidgetItem,QHeaderView,QTableWidgetSelectionRange
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTimer,pyqtSignal,QSignalMapper
 import gettext
@@ -58,6 +59,7 @@ class th_getCategories(QThread):
 
 class appManager(QWidget):
 
+	update_signal=pyqtSignal("PyQt_PyObject")
 	def __init__(self,action="",appimage=""):
 		super().__init__()
 		self.dbg=True
@@ -76,12 +78,12 @@ class appManager(QWidget):
 
 	def _render_gui(self,action="",appimage=""):
 		box=QGridLayout()
-		tab=QTabWidget()
+		self.tab=QTabWidget()
 		if action=="manage":
 			tabManager=self._render_manager()
-			tab.addTab(tabManager,_("Manage"))
+			self.tab.insertTab(0,tabManager,_("Manage"))
 		tabInstall=self._render_install(action,appimage)
-		tab.addTab(tabInstall,_("Install"))
+		self.tab.insertTab(1,tabInstall,_("Install"))
 		img_banner=QLabel()
 		img=QtGui.QPixmap("%s/appimage_banner.png"%RSRC)
 		img_banner.setPixmap(img)
@@ -92,48 +94,120 @@ class appManager(QWidget):
 		self.timer.setSingleShot(True)
 		box.addWidget(self.statusBar)
 		box.addWidget(img_banner)
-		box.addWidget(tab)
+		box.addWidget(self.tab)
 		self.setLayout(box)
 		self.show()
 
 	def _render_manager(self):
-		dict_position={}
 		def _begin_remove(appimage):
-			self._debug("Removing %s"%appimage)
-			appimage="/usr/local/bin/%s"%appimage
+			self._debug("Removing %s"%(appimage))
 			if self._remove_appimage(appimage):
-				self._show_message(_("Removed %s"%appimage))
+				self._show_message(_("Removed %s"%appimage),"background:blue")
+				_reload_grid(box)
 			else:
 				self._show_message(_("Error removing %s"%appimage))
 		def _begin_run(appimage):
 			self._debug("Executing %s"%appimage)
-			appimage="/usr/local/bin/%s"%appimage
 			self._run_appimage(appimage)
+
+		def _begin_install(appimage):
+			self._debug("Installing %s"%appimage)
+			self.tab.removeTab(1)
+			tabInstall=self._render_install("install",appimage)
+			self.tab.insertTab(1,tabInstall,_("Install"))
+			self.tab.setCurrentIndex(1)
+
+		def _reload_grid(box):
+			paths=[]
+			if chk_local.isChecked():
+				paths.append("%s/AppImages"%os.environ['HOME'])
+			if chk_system.isChecked():
+				paths.append("/usr/local/bin")
+			(box,sigmap_run,sigmap_remove,sigmap_install)=self._load_appimages(paths,box)
+			sigmap_run.mapped[QString].connect(_begin_run)
+			sigmap_remove.mapped[QString].connect(_begin_remove)
+			sigmap_install.mapped[QString].connect(_begin_install)
 		self._debug("Loading manager...")
 		tabManager=QWidget()
 		scrollArea=QScrollArea(tabManager)
 		scrollArea.setGeometry(QRect(0,0,620,245))
 		tabManager.setStyleSheet(self._managerCss())
-		box=QGridLayout()
+		chkBox=QHBoxLayout()
+		chk_system=QCheckBox(_("Show system apps"))
+		chk_system.setChecked(True)
+		chk_local=QCheckBox(_("Show local apps"))
+		chk_local.setChecked(True)
+		chkBox.addWidget(chk_system)
+		chkBox.addWidget(chk_local)
+
 		tabScrolled=QWidget()
 		tabScrolled.setObjectName("scrollbox")
 		scrollArea.setObjectName("scrollbox")
+		(box,sigmap_run,sigmap_remove,sigmap_install)=self._load_appimages(["/usr/local/bin","%s/AppImages"%os.environ["HOME"]])
+		chk_system.stateChanged.connect(lambda:_reload_grid(box))
+		chk_local.stateChanged.connect(lambda:_reload_grid(box))
+		sigmap_run.mapped[QString].connect(_begin_run)
+		sigmap_remove.mapped[QString].connect(_begin_remove)
+		sigmap_install.mapped[QString].connect(_begin_install)
+		vbox=QGridLayout()
+		vbox.addWidget(chk_local,0,Qt.Alignment(0))
+		vbox.addWidget(chk_system,0,Qt.Alignment(1))
+		vbox.addWidget(box,1,0,1,2)
+		tabScrolled.setLayout(vbox)
+		scrollArea.setWidget(tabScrolled)
+		scrollArea.alignment()
+		scrollArea.setWidgetResizable(True)
+		s=self.update_signal
+		self.update_signal.connect(lambda:_reload_grid(box))
+		return(tabManager)
+
+	def _load_appimages(self,paths=[],box=None):
 		row=0
-		col=0
+		col=4
 		icn_trash=QtGui.QIcon("%s/trash.svg"%RSRC)
 		icn_run=QtGui.QIcon("%s/run.svg"%RSRC)
+		icn_install=QtGui.QIcon.fromTheme("document-save")
+		if box:
+			box.clearContents()
+		else:
+			box=QTableWidget(row,col)
+		header=box.horizontalHeader()
+		header.setSectionResizeMode(0,QHeaderView.Stretch)
+		box.horizontalHeader().hide()
+		box.verticalHeader().hide()
+		box.setShowGrid(False)
+		box.setSelectionBehavior(QTableWidget.SelectRows)
+		box.setSelectionMode(QTableWidget.SingleSelection)
+		box.setEditTriggers(QTableWidget.NoEditTriggers)
 		sigmap_run=QSignalMapper(self)
 		sigmap_remove=QSignalMapper(self)
-		for app in os.listdir("/usr/local/bin"):
+		sigmap_install=QSignalMapper(self)
+		applist={}
+		for path in paths:
+			sw_local=False
+			if "home/" in path:
+				sw_local=True
+			for app in os.listdir(path):
+				if app in applist.keys():
+					if sw_local==False:
+						applist[app]=path
+				else:
+					applist[app]=path
+		for app,path in applist.items():
 			if app.endswith(".appimage"):
+				box.setRowCount(row+1)
 				appBox=QHBoxLayout()
+				appimage=("%s/%s"%(path,app))
 				lbl=QLabel(app.replace(".appimage",""))
+				if sw_local:
+					print(path)
 				btn_remove=QPushButton()
 				btn_remove.setIcon(icn_trash)
 				btn_remove.setIconSize(QSize(48,48))
 				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
 				btn_remove.setToolTip(_("Remove %s"%app))
-				sigmap_remove.setMapping(btn_remove,app)
+				sigmap_remove.removeMappings(btn_remove)
+				sigmap_remove.setMapping(btn_remove,appimage)
 				btn_remove.clicked.connect(sigmap_remove.map)
 				btn_run=QPushButton()
 				btn_run.setIcon(icn_run)
@@ -141,22 +215,26 @@ class appManager(QWidget):
 				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
 				btn_run.setToolTip(_("Execute %s"%app))
 				btn_run.setObjectName(str(row))
-				sigmap_run.setMapping(btn_run,app)
+				sigmap_run.removeMappings(btn_run)
+				sigmap_run.setMapping(btn_run,appimage)
 				btn_run.clicked.connect(sigmap_run.map)
-				appBox.addWidget(lbl,1,Qt.Alignment(0))
-				appBox.addWidget(btn_run,0,Qt.Alignment(2))
-				appBox.addWidget(btn_remove,0,Qt.Alignment(2))
-				dict_position.update({lbl:row})
-				box.addLayout(appBox,row,col)
+				box.setItem(row,0,QTableWidgetItem(app.replace(".appimage","")))
+				box.setCellWidget(row,1,btn_run)
+				box.setCellWidget(row,2,btn_remove)
+				if "home/" in path:
+					btn_install=QPushButton()
+					btn_install.setIcon(icn_install)
+					btn_install.setIconSize(QSize(48,48))
+					btn_install.setStyleSheet("""QPushButton{background: lightgreen;}""")
+					btn_install.setToolTip(_("Install %s"%app))
+					sigmap_install.removeMappings(btn_install)
+					sigmap_install.setMapping(btn_install,appimage)
+					btn_install.clicked.connect(sigmap_install.map)
+					box.setCellWidget(row,3,btn_install)
 				row+=1
-		sigmap_run.mapped[QString].connect(_begin_run)
-		sigmap_remove.mapped[QString].connect(_begin_remove)
-
-		tabScrolled.setLayout(box)
-		scrollArea.setWidget(tabScrolled)
-		scrollArea.alignment()
-		scrollArea.setWidgetResizable(True)
-		return(tabManager)
+		box.resizeRowsToContents()
+		box.show()
+		return (box,sigmap_run,sigmap_remove,sigmap_install)
 
 	def _render_install(self,action="",appimage=""):
 		appimage_name=os.path.basename(appimage).rstrip(".appimage")
@@ -340,6 +418,7 @@ class appManager(QWidget):
 			self._debug(e)
 			retval=False
 			self._show_message(_("Install Failed"))
+		self.update_signal.emit(retval)
 		return (retval)
 	#def _install
 
@@ -421,6 +500,7 @@ def _define_css():
 		padding:6px;
 		margin:6px;
 	}
+	
 	"""
 	return(css)
 	#def _define_css
