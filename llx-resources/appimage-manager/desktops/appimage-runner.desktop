@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Appimage Runner
+Name[ca_ES.UTF-8@valencia]=Executa appimages
+Name[ca_ES@valencia]=Executa appimages
+Name[ca]=Executa appimages
+Name[es]=Executa appimages
+Comment=Executa appimages
+Comment[ca_ES.UTF-8@valencia]=Executa appimages
+Comment[ca]=Executa appimages
+Comment[ca_ES@valencia]=Executa appimages
+Comment[es]=Executa appimages
+Exec=/usr/bin/appimage-manager %U
+Terminal=false
+MimeType=application/vnd.appimage;application/x-iso9660-appimage
+Type=Application
+Icon=x-appimage
+NoDisplay=true
+Comment=
+Categories=
