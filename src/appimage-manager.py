@@ -516,7 +516,7 @@ while args:
 		appimage=arg
 	elif "-m"==arg or "--manage"==arg:
 		action="manage"
-	elif "-i"==arg or "--install"==argv:
+	elif "-i"==arg or "--install"==arg:
 		action="install"
 if appimage and not action:
 	action="run"
