@@ -29,12 +29,6 @@ if sys.argv[1]=='install':
 	#Generate desktop
 	menu=App2Menu.app2menu()
 	menu.set_desktop_info(desktop_name,desktop_icon,desktop_comment,desktop_categories,desktop_exe)
-#	try:
-#		with open ("/usr/share/applications/%s.desktop"%os.path.basename(appimage),'w') as f:
-#			f.writelines(desktop)
-#	except Exception as e:
-#		retval=False
-#		_debug(e)
 
 #def _generate_desktop
 	try:
