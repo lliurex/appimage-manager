@@ -10,6 +10,7 @@ from PyQt5.QtCore import QSize,pyqtSlot,Qt, QPropertyAnimation,QThread,QRect,QTi
 import gettext
 import subprocess
 from app2menu import App2Menu
+from edupals.ui import QAnimatedStatusBar
 QString=type("")
 
 gettext.textdomain('appimage-manager')
@@ -87,14 +88,11 @@ class appManager(QWidget):
 		img_banner=QLabel()
 		img=QtGui.QPixmap("%s/appimage_banner.png"%RSRC)
 		img_banner.setPixmap(img)
-		self.statusBar=QStatusBar()
-		self.anim=QPropertyAnimation(self.statusBar, b"geometry")
-		self.statusBar.hide()
-		self.timer=QTimer()
-		self.timer.setSingleShot(True)
-		box.addWidget(self.statusBar)
-		box.addWidget(img_banner)
-		box.addWidget(self.tab)
+		self.statusBar=QAnimatedStatusBar.QAnimatedStatusBar()
+		self.statusBar.setStateCss("success","background-color:qlineargradient(x1:0 y1:0,x2:0 y2:1,stop:0 rgba(0,0,255,1), stop:1 rgba(0,0,255,0.6));color:white;")
+		box.addWidget(self.statusBar,0,0,1,1)
+		box.addWidget(img_banner,0,0,1,1)
+		box.addWidget(self.tab,1,0,1,1)
 		self.setLayout(box)
 		self.show()
 
@@ -102,7 +100,7 @@ class appManager(QWidget):
 		def _begin_remove(appimage):
 			self._debug("Removing %s"%(appimage))
 			if self._remove_appimage(appimage):
-				self._show_message(_("Removed %s"%appimage),"background:blue")
+				self._show_message(_("Removed %s"%appimage),"success")
 				_reload_grid(box)
 			else:
 				self._show_message(_("Error removing %s"%appimage))
@@ -338,71 +336,62 @@ class appManager(QWidget):
 			cmb_cat.adjustSize()
 		dia=QDialog()
 		dia.setWindowTitle("Appimage Desktop Definition")
-		box=QFormLayout()
-		lbl_icon=QLabel(_("Select icon: "))
+#		box=QFormLayout()
+		box=QGridLayout()
+		lbl_icon=QLabel(_("Icon: "))
+		lbl_icon.setObjectName("dlgLabel")
 		inp_icon=QLineEdit(desktop['icon'])
 		btn_icon=QPushButton()
 		icn_desktop=QtGui.QIcon.fromTheme(icon)
 		btn_icon.setIcon(icn_desktop)
 		btn_icon.setIconSize(QSize(64,64))
 		btn_icon.clicked.connect(_file_chooser)
-		box.addRow(lbl_icon,btn_icon)
-		lbl_name=QLabel(_("Set name: "))
+		box.addWidget(lbl_icon,0,1,1,1)
+		box.addWidget(btn_icon,1,1,3,1)
+#		box.addRow(lbl_icon,btn_icon)
+		lbl_name=QLabel(_("Name: "))
+		lbl_name.setObjectName("dlgLabel")
 		inp_name=QLineEdit(desktop['name'])
-		box.addRow(lbl_name,inp_name)
-		lbl_desc=QLabel(_("Set desc: "))
-		inp_desc=QLineEdit(desktop['comment'])
-		box.addRow(lbl_desc,inp_desc)
-		lbl_cat=QLabel(_("Set category: "))
+		inp_name.setPlaceholderText(_("Desktop name"))
+#		box.addRow(lbl_name,inp_name)
+		box.addWidget(lbl_name,0,0,1,1)
+		box.addWidget(inp_name,1,0,1,1)
+		lbl_cat=QLabel(_("Category: "))
+		lbl_cat.setObjectName("dlgLabel")
 		cmb_cat=QComboBox()
 		cmb_cat.setSizeAdjustPolicy(0)
+#		cmb_cat.setSizeAdjustPolicy(3)
 		th_categories=th_getCategories()
 		th_categories.start()
 		th_categories.signal.connect(_set_categories)
-		box.addRow(lbl_cat,cmb_cat)
+#		box.addRow(lbl_cat,cmb_cat)
+		box.addWidget(lbl_cat,2,0,1,1)
+		box.addWidget(cmb_cat,3,0,1,1)
+		lbl_desc=QLabel(_("Description: "))
+		lbl_desc.setObjectName("dlgLabel")
+		inp_desc=QLineEdit(desktop['comment'])
+		inp_desc.setPlaceholderText(_("Description"))
+#		box.addRow(lbl_desc,inp_desc)
+		box.addWidget(lbl_desc,4,0,1,2)
+		box.addWidget(inp_desc,5,0,1,2)
 		btnBox=QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
 		btnBox.rejected.connect(dia.reject)
 		btnBox.accepted.connect(_begin_save_desktop)
 #		box.addRow(btn_apply,btn_cancel)
-		box.addRow(btnBox)
+#		box.addRow(btnBox)
+		box.addWidget(btnBox,6,0,1,2)
 		dia.setLayout(box)
 		dia.show()
 		result=dia.exec_()
 		return (desktop,result==QDialog.Accepted)
 	#def _render_desktop_dialog
 
-	def _show_message(self,msg,css=None):
-		def hide_message():
-			timer=1000
-			self.anim.setDuration(timer)
-			self.anim.setStartValue(QRect(0,0,self.width()-10,self.height-10))
-			self.anim.setEndValue(QRect(0,0,self.width()-10,0))
-			self.anim.start()
-			self.timer.singleShot(timer, lambda:self.statusBar.hide())
-		if css:
-			self.statusBar.setStyleSheet("""QStatusBar{%s;}"""%css)
+	def _show_message(self,msg,status=None):
+		self.statusBar.setText(msg)
+		if status:
+			self.statusBar.show(status)
 		else:
-			self.statusBar.setStyleSheet("""QStatusBar{background:red;}""")
-		self.statusBar.showMessage("%s"%msg)
-		self.anim.setDuration(1000)
-		self.anim.setLoopCount(1)
-		height=self.statusBar.height()/10
-		if self.height<height:
-			self.height=height
-		self.statusBar.show()
-		self.anim.setStartValue(QRect(0,0,self.width()-10,0))
-		self.anim.setEndValue(QRect(0,0,self.width()-10,self.height-10))
-		self.anim.start()
-		self.timer.singleShot(3000, lambda:hide_message())
-
-	def _hide_message(self):
-		self._debug("Hide")
-		timer=1000
-		self.anim.setDuration(timer)
-		height=self.statusBar.height()/10
-		self.anim.setStartValue(QRect(0,0,self.width()-10,height-10))
-		self.anim.setEndValue(QRect(0,0,self.width()-10,0))
-		self.anim.start()
+			self.statusBar.show()
 
 	@pyqtSlot()
 	def _install(self,appimage,desktop):
@@ -413,7 +402,7 @@ class appManager(QWidget):
 		try:
 			(name,icon,comment,categories,exe)=self._generate_desktop(appimage,desktop)
 			subprocess.check_call(["pkexec","/usr/share/appimage-manager/bin/appimage-helper.py","install",appimage,dst_path,name,icon,comment,categories,exe])
-			self._show_message(_("%s installed"%name),"background:blue")
+			self._show_message(_("%s installed"%name),"success")
 		except Exception as e:
 			self._debug(e)
 			retval=False
@@ -500,7 +489,21 @@ def _define_css():
 		padding:6px;
 		margin:6px;
 	}
+
+	#dlgLabel{
+		font:12px Roboto;
+		margin:0px;
+		border:0px;
+		padding:3px;
+	}
 	
+	QLineEdit{
+		border:0px;
+		border-bottom:1px solid grey;
+		padding:1px;
+		font:14px Roboto;
+		margin-right:6px;
+	}
 	"""
 	return(css)
 	#def _define_css
