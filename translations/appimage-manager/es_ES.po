@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-15 08:49+0200\n"
+"PO-Revision-Date: 2019-04-15 08:51+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/appimage-manager.py:85
+msgid "Manage"
+msgstr "Gestionar"
+
+#: ../src/appimage-manager.py:87 ../src/appimage-manager.py:115
+msgid "Install"
+msgstr "Instalar"
+
+#: ../src/appimage-manager.py:103
+#, python-format
+msgid "Removed %s"
+msgstr "%s eliminada"
+
+#: ../src/appimage-manager.py:106
+#, python-format
+msgid "Error removing %s"
+msgstr "Error eliminando %s"
+
+#: ../src/appimage-manager.py:134
+msgid "Show system apps"
+msgstr "Mostrar aplicaciones instaladas"
+
+#: ../src/appimage-manager.py:136
+msgid "Show local apps"
+msgstr "Mostrar aplicaciones del usuario"
+
+#: ../src/appimage-manager.py:206
+#, python-format
+msgid "Remove %s"
+msgstr "Eliminar %s"
+
+#: ../src/appimage-manager.py:214
+#, python-format
+msgid "Execute %s"
+msgstr "Ejecutar %s"
+
+#: ../src/appimage-manager.py:227
+#, python-format
+msgid "Install %s"
+msgstr "Instalar %s"
+
+#: ../src/appimage-manager.py:252 ../src/appimage-manager.py:274
+#, python-format
+msgid ""
+"Name: %s\n"
+"Description: %s\n"
+"Icon: %s\n"
+"Category: %s"
+msgstr ""
+"Nombre: %s\n"
+"Descripción: %s\n"
+"Icono: %s\n"
+"Categoría: %s"
+
+#: ../src/appimage-manager.py:262 ../src/appimage-manager.py:286
+#, python-format
+msgid "%s the application %s"
+msgstr "%s la aplicación %s"
+
+#: ../src/appimage-manager.py:273
+msgid ""
+"Push button to set the icon,\n"
+" name and category for the app\n"
+" or use default ones"
+msgstr ""
+"Presiona para seleccionar el icono,\n"
+" nombre y categoría de la aplicación\n"
+" o usa valores por defecto"
+
+#: ../src/appimage-manager.py:289
+msgid "Press button to select an appimage for install"
+msgstr "Pulsa para seleccionar una appimage a instalar"
+
+#: ../src/appimage-manager.py:297
+msgid "Install appimage"
+msgstr "Instalar appimage"
+
+#: ../src/appimage-manager.py:311
+msgid "images(*.png *.xpm *jpg)"
+msgstr "imágenes(*.png *.xpm *jpg)"
+
+#: ../src/appimage-manager.py:341
+msgid "Icon: "
+msgstr "Icono: "
+
+#: ../src/appimage-manager.py:352
+msgid "Name: "
+msgstr "Nombre: "
+
+#: ../src/appimage-manager.py:355
+msgid "Desktop name"
+msgstr "Nombre del desktop"
+
+#: ../src/appimage-manager.py:359
+msgid "Category: "
+msgstr "Categoría: "
+
+#: ../src/appimage-manager.py:370
+msgid "Description: "
+msgstr "Descripción: "
+
+#: ../src/appimage-manager.py:373
+msgid "Description"
+msgstr "Descripción"
+
+#: ../src/appimage-manager.py:405
+#, python-format
+msgid "%s installed"
+msgstr "%s instalada"
+
+#: ../src/appimage-manager.py:409
+msgid "Install Failed"
+msgstr "Error instalando"
+
+#: ../src/appimage-manager.py:428
+#, python-format
+msgid "Error executing %s"
+msgstr "Error al ejecutar %s"
+
+#~ msgid "Set desc: "
+#~ msgstr "Descripción:"

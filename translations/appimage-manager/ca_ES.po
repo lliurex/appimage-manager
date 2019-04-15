@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-15 08:49+0200\n"
+"PO-Revision-Date: 2019-04-15 08:58+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ca_ES\n"
+
+#: ../src/appimage-manager.py:85
+msgid "Manage"
+msgstr "Gestionar"
+
+#: ../src/appimage-manager.py:87 ../src/appimage-manager.py:115
+msgid "Install"
+msgstr "Instal·lar"
+
+#: ../src/appimage-manager.py:103
+#, python-format
+msgid "Removed %s"
+msgstr "%s desinstal·lat"
+
+#: ../src/appimage-manager.py:106
+#, python-format
+msgid "Error removing %s"
+msgstr "Error desinstal·lant %s"
+
+#: ../src/appimage-manager.py:134
+msgid "Show system apps"
+msgstr "Mostrar aplicacions del sistema"
+
+#: ../src/appimage-manager.py:136
+msgid "Show local apps"
+msgstr "Mostrar aplicacions locals"
+
+#: ../src/appimage-manager.py:206
+#, python-format
+msgid "Remove %s"
+msgstr "Desinstal·lar %s"
+
+#: ../src/appimage-manager.py:214
+#, python-format
+msgid "Execute %s"
+msgstr "Executar %s"
+
+#: ../src/appimage-manager.py:227
+#, python-format
+msgid "Install %s"
+msgstr "Instal·lar %s"
+
+#: ../src/appimage-manager.py:252 ../src/appimage-manager.py:274
+#, python-format
+msgid ""
+"Name: %s\n"
+"Description: %s\n"
+"Icon: %s\n"
+"Category: %s"
+msgstr ""
+"Nom: %s\n"
+"Descripció: %s\n"
+"Icona: %s\n"
+"Categoría: %s"
+
+#: ../src/appimage-manager.py:262 ../src/appimage-manager.py:286
+#, python-format
+msgid "%s the application %s"
+msgstr "%s la aplicació %s"
+
+#: ../src/appimage-manager.py:273
+msgid ""
+"Push button to set the icon,\n"
+" name and category for the app\n"
+" or use default ones"
+msgstr ""
+"Prem per estabilr la icona,\n"
+"el nom i la categoria de la aplicació\n"
+"(o utilitza els valors per defecte)"
+
+#: ../src/appimage-manager.py:289
+msgid "Press button to select an appimage for install"
+msgstr "Prem per a seleccionar la appimage a instal·lar"
+
+#: ../src/appimage-manager.py:297
+msgid "Install appimage"
+msgstr "Instal·lar appimage"
+
+#: ../src/appimage-manager.py:311
+msgid "images(*.png *.xpm *jpg)"
+msgstr "imatges(*.png *.xpm *jpg)"
+
+#: ../src/appimage-manager.py:341
+msgid "Icon: "
+msgstr "Icona: "
+
+#: ../src/appimage-manager.py:352
+msgid "Name: "
+msgstr "Nom: "
+
+#: ../src/appimage-manager.py:355
+msgid "Desktop name"
+msgstr "Nom del desktop"
+
+#: ../src/appimage-manager.py:359
+msgid "Category: "
+msgstr "Categoria: "
+
+#: ../src/appimage-manager.py:370
+msgid "Description: "
+msgstr "Descripció: "
+
+#: ../src/appimage-manager.py:373
+msgid "Description"
+msgstr "Descripció"
+
+#: ../src/appimage-manager.py:405
+#, python-format
+msgid "%s installed"
+msgstr "%s instal·lat"
+
+#: ../src/appimage-manager.py:409
+msgid "Install Failed"
+msgstr "Instal·lació fallida"
+
+#: ../src/appimage-manager.py:428
+#, python-format
+msgid "Error executing %s"
+msgstr "Error al executar %s"
