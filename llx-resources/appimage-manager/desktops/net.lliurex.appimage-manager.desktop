@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Appimage Manager
+Name[ca_ES.UTF-8@valencia]=Gestor de appimages
+Name[ca_ES@valencia]=Gestor de appimages
+Name[ca]=Gestor de appimages
+Name[es]=Gestor de appimages
+Comment=Manage appimages
+Comment[ca_ES.UTF-8@valencia]=Gestiona les appimages del sistema
+Comment[ca]=Gestiona les appimages del sistema
+Comment[es]=Gestiona las appimages del sistema
+Comment[ca_ES@valencia]=Gestiona les appimages del sistema
+Exec=/usr/bin/appimage-manager
+Terminal=false
+Type=Application
+Icon=x-appimage
+Categories=QT;KDE;Utilities
