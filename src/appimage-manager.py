@@ -526,7 +526,7 @@ if appimage and not action:
 elif not appimage:
 	action="manage"
 if action=="install" or action=='manage':
-	app=QApplication([])
+	app=QApplication(["Appimage Manager"])
 	appimageManager=appManager(action,appimage)
 	app.instance().setStyleSheet(_define_css())
 	app.exec_()
