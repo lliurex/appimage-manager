@@ -44,10 +44,25 @@ if sys.argv[1]=='install':
 	_debug("Installed %s %s"%(sys.argv[2],sys.argv[3]))
 elif sys.argv[1]=='run':
 	appimage=sys.argv[2]
-	os.chmod(appimage,0o755)
-	subprocess.check_call([appimage])
+        try:
+            subprocess.check_call([appimage])
+        except Exception as e:
+            try:
+                os.chmod(appimage,0o755)
+                subprocess.check_call([appimage])
+            except Exception as e:
+                _debug(e)
 elif sys.argv[1]=='remove':
 	appimage=sys.argv[2]
+	try:
+		subprocess.check_call([appimage,"--remove-appimage-desktop-integration"])
+	except:
+		_debug("%s has no desktop integration"%appimage)
+	#Remove the desktop (if any)
+	desk_name=os.path.basename(appimage)
+	desk_name=desk_name.replace(".appimage",".desktop").replace(" ","_")
+	if os.path.isfile("/usr/share/applications/%s"%desk_name):
+		os.remove("/usr/share/applications/%s"%desk_name)
 	os.remove(appimage)
 exit(err)
 
