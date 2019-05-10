@@ -28,9 +28,6 @@ if sys.argv[1]=='install':
 	shutil.copy2(appimage,path)
 	#Generate desktop
 	menu=App2Menu.app2menu()
-<<<<<<< HEAD
-	menu.set_desktop_info(desktop_name,desktop_icon,desktop_comment,desktop_categories,desktop_exe)
-=======
 	menu.set_desktop_info(desktop_name,desktop_icon,desktop_comment,desktop_categories,desktop_exe,fname=appimage)
 #	try:
 #		with open ("/usr/share/applications/%s.desktop"%os.path.basename(appimage),'w') as f:
@@ -38,7 +35,6 @@ if sys.argv[1]=='install':
 #	except Exception as e:
 #		retval=False
 #		_debug(e)
->>>>>>> master
 
 #def _generate_desktop
 	try:
