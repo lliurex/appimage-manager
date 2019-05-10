@@ -28,7 +28,17 @@ if sys.argv[1]=='install':
 	shutil.copy2(appimage,path)
 	#Generate desktop
 	menu=App2Menu.app2menu()
+<<<<<<< HEAD
 	menu.set_desktop_info(desktop_name,desktop_icon,desktop_comment,desktop_categories,desktop_exe)
+=======
+	menu.set_desktop_info(desktop_name,desktop_icon,desktop_comment,desktop_categories,desktop_exe,fname=appimage)
+#	try:
+#		with open ("/usr/share/applications/%s.desktop"%os.path.basename(appimage),'w') as f:
+#			f.writelines(desktop)
+#	except Exception as e:
+#		retval=False
+#		_debug(e)
+>>>>>>> master
 
 #def _generate_desktop
 	try:
@@ -38,25 +48,21 @@ if sys.argv[1]=='install':
 	_debug("Installed %s %s"%(sys.argv[2],sys.argv[3]))
 elif sys.argv[1]=='run':
 	appimage=sys.argv[2]
-        try:
-            subprocess.check_call([appimage])
-        except Exception as e:
-            try:
-                os.chmod(appimage,0o755)
-                subprocess.check_call([appimage])
-            except Exception as e:
-                _debug(e)
+	try:
+		subprocess.check_call([appimage])
+	except Exception as e:
+		try:
+			os.chmod(appimage,0o755)
+			subprocess.check_call([appimage])
+		except Exception as e:
+			_debug(e)
 elif sys.argv[1]=='remove':
 	appimage=sys.argv[2]
-	try:
-		subprocess.check_call([appimage,"--remove-appimage-desktop-integration"])
-	except:
-		_debug("%s has no desktop integration"%appimage)
 	#Remove the desktop (if any)
 	desk_name=os.path.basename(appimage)
-	desk_name=desk_name.replace(".appimage",".desktop").replace(" ","_")
-	if os.path.isfile("/usr/share/applications/%s"%desk_name):
-		os.remove("/usr/share/applications/%s"%desk_name)
+	desk_name=desk_name.replace(" ","_")
+	if os.path.isfile("/usr/share/applications/%s.desktop"%desk_name):
+		os.remove("/usr/share/applications/%s.desktop"%desk_name)
 	os.remove(appimage)
 exit(err)
 
