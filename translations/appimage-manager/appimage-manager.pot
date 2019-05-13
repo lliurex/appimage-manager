@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-15 08:49+0200\n"
+"POT-Creation-Date: 2019-05-13 09:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,48 +17,48 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/appimage-manager.py:85
+#: ../src/appimage-manager.py:93
 msgid "Manage"
 msgstr ""
 
-#: ../src/appimage-manager.py:87 ../src/appimage-manager.py:115
+#: ../src/appimage-manager.py:95 ../src/appimage-manager.py:123
 msgid "Install"
 msgstr ""
 
-#: ../src/appimage-manager.py:103
+#: ../src/appimage-manager.py:111
 #, python-format
 msgid "Removed %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:106
+#: ../src/appimage-manager.py:114
 #, python-format
 msgid "Error removing %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:134
+#: ../src/appimage-manager.py:142
 msgid "Show system apps"
 msgstr ""
 
-#: ../src/appimage-manager.py:136
+#: ../src/appimage-manager.py:144
 msgid "Show local apps"
-msgstr ""
-
-#: ../src/appimage-manager.py:206
-#, python-format
-msgid "Remove %s"
 msgstr ""
 
 #: ../src/appimage-manager.py:214
 #, python-format
+msgid "Remove %s"
+msgstr ""
+
+#: ../src/appimage-manager.py:222
+#, python-format
 msgid "Execute %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:227
+#: ../src/appimage-manager.py:235
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:252 ../src/appimage-manager.py:274
+#: ../src/appimage-manager.py:260 ../src/appimage-manager.py:282
 #, python-format
 msgid ""
 "Name: %s\n"
@@ -67,64 +67,64 @@ msgid ""
 "Category: %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:262 ../src/appimage-manager.py:286
+#: ../src/appimage-manager.py:270 ../src/appimage-manager.py:294
 #, python-format
 msgid "%s the application %s"
 msgstr ""
 
-#: ../src/appimage-manager.py:273
+#: ../src/appimage-manager.py:281
 msgid ""
 "Push button to set the icon,\n"
 " name and category for the app\n"
 " or use default ones"
 msgstr ""
 
-#: ../src/appimage-manager.py:289
+#: ../src/appimage-manager.py:297
 msgid "Press button to select an appimage for install"
 msgstr ""
 
-#: ../src/appimage-manager.py:297
+#: ../src/appimage-manager.py:305
 msgid "Install appimage"
 msgstr ""
 
-#: ../src/appimage-manager.py:311
+#: ../src/appimage-manager.py:319
 msgid "images(*.png *.xpm *jpg)"
 msgstr ""
 
-#: ../src/appimage-manager.py:341
+#: ../src/appimage-manager.py:349
 msgid "Icon: "
 msgstr ""
 
-#: ../src/appimage-manager.py:352
+#: ../src/appimage-manager.py:360
 msgid "Name: "
 msgstr ""
 
-#: ../src/appimage-manager.py:355
+#: ../src/appimage-manager.py:363
 msgid "Desktop name"
 msgstr ""
 
-#: ../src/appimage-manager.py:359
+#: ../src/appimage-manager.py:367
 msgid "Category: "
 msgstr ""
 
-#: ../src/appimage-manager.py:370
+#: ../src/appimage-manager.py:378
 msgid "Description: "
 msgstr ""
 
-#: ../src/appimage-manager.py:373
+#: ../src/appimage-manager.py:381
 msgid "Description"
 msgstr ""
 
-#: ../src/appimage-manager.py:405
+#: ../src/appimage-manager.py:413
 #, python-format
 msgid "%s installed"
 msgstr ""
 
-#: ../src/appimage-manager.py:409
+#: ../src/appimage-manager.py:417
 msgid "Install Failed"
 msgstr ""
 
-#: ../src/appimage-manager.py:428
+#: ../src/appimage-manager.py:436
 #, python-format
 msgid "Error executing %s"
 msgstr ""
