@@ -12,5 +12,5 @@ Comment[ca_ES@valencia]=Gestiona les appimages del sistema
 Exec=/usr/bin/appimage-manager
 Terminal=false
 Type=Application
-Icon=appimage-manager
+Icon=x-appimage
 Categories=QT;KDE;Utilities

@@ -66,6 +66,14 @@ class appManager(QWidget):
 		self.dbg=True
 		self._debug("Action %s Appimage %s"%(action,appimage))
 		self.height=0
+		#Prevent appimage desktop integration
+		if not os.path.isfile("%s/.local/share/appimagekit/no_desktopintegration"%os.environ['HOME']):
+			try:
+				os.makedirs("%s/.local/share/appimagekit/"%os.environ['HOME'])
+			except:
+				pass
+			f=open("%s/.local/share/appimagekit/no_desktopintegration"%os.environ['HOME'],'w')
+			f.close()
 		self._render_gui(action,appimage)
 		self.desktop={}
 	#def init
