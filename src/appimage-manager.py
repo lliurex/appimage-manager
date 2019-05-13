@@ -63,7 +63,8 @@ class appManager(QWidget):
 	update_signal=pyqtSignal("PyQt_PyObject")
 	def __init__(self,action="",appimage=""):
 		super().__init__()
-		self.dbg=True
+		self.dbg=False
+		self.setWindowIcon(QtGui.QIcon("/usr/share/icons/hicolor/48x48/apps/x-appimage.png"))
 		self._debug("Action %s Appimage %s"%(action,appimage))
 		self.height=0
 		#Prevent appimage desktop integration
@@ -205,6 +206,7 @@ class appManager(QWidget):
 				appBox=QHBoxLayout()
 				appimage=("%s/%s"%(path,app))
 				lbl=QLabel(app.replace(".appimage",""))
+				lbl.setObjectName("managerLabel")
 				if sw_local:
 					print(path)
 				btn_remove=QPushButton()
@@ -462,6 +464,10 @@ class appManager(QWidget):
 			font=14px Roboto;
 			margin: 6px;
 			padding:6px;
+		}
+		#managerLabel{
+			font=20px Roboto;
+			font-weight:bold;
 		}
 		#scrollbox{
 			border:0px 0px 0px 0px;
