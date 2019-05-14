@@ -1,3 +1,9 @@
+appimage-manager (0.2.1) bionic; urgency=medium
+
+  * Add ~/Applications as path for local appimages
+
+ -- Juanma Navarro Mañez <juanma1980@gmail.com>  Tue, 14 May 2019 08:40:34 +0200
+
 appimage-manager (0.2) bionic; urgency=medium
 
   * Graphical improvements
