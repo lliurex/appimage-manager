@@ -128,7 +128,7 @@ class appManager(QWidget):
 		def _reload_grid(box):
 			paths=[]
 			if chk_local.isChecked():
-				paths.append("%s/AppImages"%os.environ['HOME'])
+				paths.append("%s/Applications"%os.environ['HOME'])
 			if chk_system.isChecked():
 				paths.append("/usr/local/bin")
 			(box,sigmap_run,sigmap_remove,sigmap_install)=self._load_appimages(paths,box)
