@@ -1,3 +1,9 @@
+appimage-manager (0.3) bionic; urgency=medium
+
+  * Add valencian translation
+
+ -- Juanma Navarro Mañez <juanma1980@gmail.com>  Thu, 27 Jun 2019 14:12:37 +0200
+
 appimage-manager (0.2.1) bionic; urgency=medium
 
   * Add ~/Applications as path for local appimages
