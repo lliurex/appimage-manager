@@ -66,6 +66,7 @@ class appManager(QWidget):
 		self.dbg=False
 		self.setWindowIcon(QtGui.QIcon("/usr/share/icons/hicolor/48x48/apps/x-appimage.png"))
 		self._debug("Action %s Appimage %s"%(action,appimage))
+		self.paths=["/usr/local/bin","%s/AppImages"%os.environ["HOME"],"%s/Applications"%os.environ["HOME"]]
 		self.height=0
 		#Prevent appimage desktop integration
 		if not os.path.isfile("%s/.local/share/appimagekit/no_desktopintegration"%os.environ['HOME']):
@@ -150,7 +151,7 @@ class appManager(QWidget):
 		tabScrolled=QWidget()
 		tabScrolled.setObjectName("scrollbox")
 		scrollArea.setObjectName("scrollbox")
-		(box,sigmap_run,sigmap_remove,sigmap_install)=self._load_appimages(["/usr/local/bin","%s/AppImages"%os.environ["HOME"],"%s/Applications"%os.environ["HOME"]])
+		(box,sigmap_run,sigmap_remove,sigmap_install)=self._load_appimages(self.paths)
 		chk_system.stateChanged.connect(lambda:_reload_grid(box))
 		chk_local.stateChanged.connect(lambda:_reload_grid(box))
 		sigmap_run.mapped[QString].connect(_begin_run)
@@ -194,6 +195,8 @@ class appManager(QWidget):
 			sw_local=False
 			if "home/" in path:
 				sw_local=True
+			if not os.path.isdir(path):
+				continue
 			for app in os.listdir(path):
 				if app in applist.keys():
 					if sw_local==False:
