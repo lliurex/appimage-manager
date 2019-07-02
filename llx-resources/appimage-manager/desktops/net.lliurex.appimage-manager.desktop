@@ -13,4 +13,4 @@ Exec=/usr/bin/appimage-manager
 Terminal=false
 Type=Application
 Icon=x-appimage
-Categories=QT;KDE;Utilities
+Categories=QT;KDE;LliureX-Administration
