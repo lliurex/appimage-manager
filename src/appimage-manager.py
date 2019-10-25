@@ -90,9 +90,9 @@ class appManager(QWidget):
 	def _render_gui(self,action="",appimage=""):
 		box=QGridLayout()
 		self.tab=QTabWidget()
-		if action=="manage":
-			tabManager=self._render_manager()
-			self.tab.insertTab(0,tabManager,_("Manage"))
+#		if action=="manage":
+		tabManager=self._render_manager()
+		self.tab.insertTab(0,tabManager,_("Manage"))
 		tabInstall=self._render_install(action,appimage)
 		self.tab.insertTab(1,tabInstall,_("Install"))
 		img_banner=QLabel()
@@ -104,6 +104,8 @@ class appManager(QWidget):
 		box.addWidget(img_banner,0,0,1,1)
 		box.addWidget(self.tab,1,0,1,1)
 		self.setLayout(box)
+		if action=="install":
+			self.tab.setCurrentIndex(1)
 		self.show()
 
 	def _render_manager(self):
