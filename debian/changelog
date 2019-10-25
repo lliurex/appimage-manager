@@ -1,3 +1,9 @@
+appimage-manager (0.3.2) bionic; urgency=medium
+
+  * Install mode not hiding manage tab
+
+ -- Juanma1980 <juanma1980@gmail.com>  Fri, 25 Oct 2019 08:43:05 +0200
+
 appimage-manager (0.3.1.2) bionic; urgency=medium
 
   * Add python3-pyqt5 as depend 
