@@ -20,27 +20,24 @@
 <p xml:lang="ca_ES@valencia">Gestiona les appimages del sistema</p>
 </description>
 <categories>
-<category>QT</category>
 <category>KDE</category>
-<category>Utilities</category>
+<category>Administration</category>
+<category>LliureX</category>
 </categories>
 <icon type="stock">x-appimage</icon>
 <provides><binary>/usr/bin/appimage-manager</binary></provides>
 <keywords>
 <keyword>appimage</keyword>
 <keyword>manager</keyword>
-<keyword>Appimage</keyword>
-<keyword>Manager</keyword>
 </keywords>
 <keywords xml:lang="ca_ES.UTF-8@valencia">
 <keyword>Gestor</keyword>
-<keyword>appimages</keyword>
 </keywords>
 <keywords xml:lang="ca_ES@valencia">
 </keywords>
 <keywords xml:lang="ca">
 </keywords>
 <keywords xml:lang="es">
-
+<keyword>Gestor</keyword>
 </keywords>
 </component>
