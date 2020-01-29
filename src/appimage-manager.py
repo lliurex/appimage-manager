@@ -174,9 +174,11 @@ class appManager(QWidget):
 	def _load_appimages(self,paths=[],box=None):
 		row=0
 		col=4
-		icn_trash=QtGui.QIcon("%s/trash.svg"%RSRC)
-		icn_run=QtGui.QIcon("%s/run.svg"%RSRC)
-		icn_install=QtGui.QIcon.fromTheme("document-save")
+#		icn_trash=QtGui.QIcon("%s/trash.svg"%RSRC)
+		icn_trash=QtGui.QIcon.fromTheme("application-exit")
+#		icn_run=QtGui.QIcon("%s/run.svg"%RSRC)
+		icn_run=QtGui.QIcon.fromTheme("system-run")
+		icn_install=QtGui.QIcon.fromTheme("system-software-install")
 		if box:
 			box.clearContents()
 		else:
@@ -217,7 +219,7 @@ class appManager(QWidget):
 				btn_remove=QPushButton()
 				btn_remove.setIcon(icn_trash)
 				btn_remove.setIconSize(QSize(48,48))
-				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
+#				btn_remove.setStyleSheet("""QPushButton{background: red;}""")
 				btn_remove.setToolTip(_("Remove %s")%app)
 				sigmap_remove.removeMappings(btn_remove)
 				sigmap_remove.setMapping(btn_remove,appimage)
@@ -225,7 +227,7 @@ class appManager(QWidget):
 				btn_run=QPushButton()
 				btn_run.setIcon(icn_run)
 				btn_run.setIconSize(QSize(48,48))
-				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
+#				btn_run.setStyleSheet("""QPushButton{background: blue;}""")
 				btn_run.setToolTip(_("Execute %s")%app)
 				btn_run.setObjectName(str(row))
 				sigmap_run.removeMappings(btn_run)
@@ -238,7 +240,7 @@ class appManager(QWidget):
 					btn_install=QPushButton()
 					btn_install.setIcon(icn_install)
 					btn_install.setIconSize(QSize(48,48))
-					btn_install.setStyleSheet("""QPushButton{background: lightgreen;}""")
+#					btn_install.setStyleSheet("""QPushButton{background: lightgreen;}""")
 					btn_install.setToolTip(_("Install %s")%app)
 					sigmap_install.removeMappings(btn_install)
 					sigmap_install.setMapping(btn_install,appimage)
