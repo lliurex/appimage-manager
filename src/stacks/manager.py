@@ -8,18 +8,19 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt,QSize,pyqtSignal
 from appconfig.appConfigStack import appConfigStack as confStack
 from edupals.ui import QAnimatedStatusBar
-import airmanager.airmanager as installer
+from stacks.lib.libappmanager import appmanager as appmanager
 from app2menu import App2Menu
 
 import gettext
 _ = gettext.gettext
 
-class airWidget(QWidget):
+class appWidget(QWidget):
 	remove=pyqtSignal("PyQt_PyObject")
 	execute=pyqtSignal("PyQt_PyObject")
-	def __init__(self,parent=None):
-		super (airWidget,self).__init__(parent)
+	def __init__(self,appimage,parent=None):
+		super (appWidget,self).__init__(parent)
 		self.desktop=''
+		self.app=appimage
 		box=QGridLayout()
 		box.setColumnStretch(0,-1)
 		box.setColumnStretch(1,1)
@@ -44,16 +45,12 @@ class airWidget(QWidget):
 		self.setStyleSheet(self._setCss())
 	#def __init__
 
+	def getApp(self):
+		return(self.app)
+
 	def setIcon(self,icon):
-		qicon=None
-		if QtGui.QIcon.hasThemeIcon(icon):
-			qicon=QtGui.QIcon.fromTheme(icon)
-		elif os.path.isfile(icon):
-			qicon=QtGui.QIcon(icon)
-		else:
-			qicon=QtGui.QIcon.fromTheme("package-x-generic")
-		if qicon:
-			self.btn_icon.setIcon(qicon)
+		print(icon)
+		self.btn_icon.setIcon(icon)
 	#def setIcon
 
 	def setDesktop(self,desktop):
@@ -88,8 +85,7 @@ class airWidget(QWidget):
 		self.remove.emit(self)
 
 	def _executeAir(self):
-		exe=["kioclient5","exec",self.desktop]
-		self.pid=subprocess.Popen(exe,stdin=None,stdout=None,stderr=None,shell=False)
+		self.pid=subprocess.Popen(self.app,stdin=None,stdout=None,stderr=None,shell=False)
 	#def _executeAir(self):
 
 	def _setCss(self):
@@ -127,7 +123,7 @@ class manager(confStack):
 		self.enabled=True
 		self.level='system'
 		self.hideControlButtons()
-		self.airinstaller=installer.AirManager()	
+		self.appmanager=appmanager()
 		self.menu=App2Menu.app2menu()
 		self.setStyleSheet(self._setCss())
 		self.widget=''
@@ -155,10 +151,10 @@ class manager(confStack):
 			if os.path.isdir(path):
 				for fn in os.listdir(path):
 					if fn.endswith("appimage"):
-						appCell=self._paintCell(fn)
+						appCell=self._paintCell(os.path.join(path,fn))
 						if appCell:
 							self.lst_appimage.insertRow(cont)
-							self.lst_appimage.setCellWidget(cont,0,airCell)
+							self.lst_appimage.setCellWidget(cont,0,appCell)
 							self.lst_appimage.resizeRowToContents(cont)
 							cont+=1
 		if cont==0:
@@ -174,40 +170,31 @@ class manager(confStack):
 		return True
 	#def _udpate_screen
 
-	def _paintCell(self,airApp):
+	def _paintCell(self,appimage):
 		widget=None
-		return widget
-		if airApp:
-			desktop=self.menu.get_desktop_info(airApp.get('desktop',''))
-			name=desktop.get('Name','')
-			if name:
-				widget=airWidget()
-				widget.setDesktop(airApp.get('desktop'))
-				widget.remove.connect(self._removeAir)
-				widget.setName(name)
-				icon=desktop.get('Icon','')
-				widget.setIcon(icon)
-				comment=desktop.get('Comment','')
-				widget.setDesc(comment)
-				execute=desktop.get('Exec','')
-				widget.setExe(execute)
+		if appimage:
+			data=self.appmanager.getAppData(appimage)
+			if data.get('name',''):
+				widget=appWidget(appimage)
+#				widget.setDesktop(airApp.get('desktop'))
+				widget.remove.connect(self._removeApp)
+				widget.setName(data['name'])
+#				icon=desktop.get('Icon','')
+				widget.setIcon(data['icon'])
+				widget.setDesc(data['desc'])
+				widget.setExe(data['exe'])
 		return widget
 	#def _paintCell
 
 	def writeConfig(self):
 		if self.widget=='':
 			return
-		subprocess.check_call(['/usr/bin/xhost','+'])
-		try:
-			subprocess.check_call(['pkexec','/usr/bin/air-helper-installer.py','remove',self.widget.getName(),self.widget.getDesktop()])
-		except  Exception as e:
-			print(e)
-		subprocess.check_call(['/usr/bin/xhost','-'])
+		self.appmanager.localRemove(self.widget.getApp())
 		self.showMsg(_("App %s uninstalled"%self.widget.getName()))
 		self.updateScreen()
 	#def writeConfig
 
-	def _removeAir(self,widget):
+	def _removeApp(self,widget):
 		self.widget=widget
 		self.writeConfig()
 	#def _removeAir

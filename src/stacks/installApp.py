@@ -7,9 +7,9 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt,QSize
 from appconfig.appConfigStack import appConfigStack as confStack
 from edupals.ui import QAnimatedStatusBar
-import airmanager.airmanager as installer
+import shutil
 import tempfile
-from gi.repository import GdkPixbuf
+from stacks.lib.libappmanager import appmanager as appmanager
 
 import gettext
 _ = gettext.gettext
@@ -25,9 +25,9 @@ class installApp(confStack):
 		self.index=2
 		self.enabled=True
 		self.level='system'
-#		self.hideControlButtons()
-		self.airinstaller=installer.AirManager()	
 		self.setStyleSheet(self._setCss())
+		self.appPath="%s/Applications"%os.environ["HOME"]
+		self.appmanager=appmanager()
 	#def __init__
 	
 	def _load_screen(self):
@@ -71,35 +71,14 @@ class installApp(confStack):
 
 	def _loadAppData(self,app=""):
 		if app:
-			icon=""
-			subprocess.run(["chmod","+x","%s"%app])
-			output=subprocess.check_output(["%s"%app,"--appimage-extract","*.desktop"])
-			output=output.decode("utf-8")
-			with open(output.replace("\n",""),'r') as f:
-				for line in f.readlines():
-					if line.startswith("Exec"):
-						exe=line.split("=")[-1]
-					if line.startswith("Name="):
-						name=line.split("=")[-1]
-					if line.startswith("Icon"):
-						icon=line.split("=")[-1].strip()
-					if line.startswith("Comment="):
-						desc=line.split("=")[-1]
-			if icon:
-				output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.svg"%icon])
-				if not output:
-					output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.png"%icon])
-				if output:
-					icn=output.decode("utf-8").replace("\n","")
-					print(icn)
-					icon=QtGui.QIcon("./%s"%icn)
-
-			if not icon:
-				icon="x-appimage"
-				icon=QtGui.QIcon.fromTheme(icon)
-			self.inp_name.setText(name)
-			self.inp_desc.setText(desc)
-			self.btn_icon.setIcon(icon)
+			data=self.appmanager.getAppData(app)
+			self.inp_name.setText(data.get('name',''))
+			self.inp_desc.setText(data.get('desc',''))
+			self.btn_icon.setIcon(data.get('icon',''))
+			try:
+				shutil.rmtree("%s/squashfs-root"%os.path.dirname(app))
+			except:
+				pass
 		else:
 			self.inp_name.setText("")
 			self.inp_desc.setText("")
@@ -117,19 +96,24 @@ class installApp(confStack):
 	#def _udpate_screen
 	
 	def writeConfig(self):
-		tmp_icon=tempfile.mkstemp()[1]
-		self.btn_icon.icon().pixmap(QSize(64,64)).save(tmp_icon,"PNG")
-		subprocess.check_call(['/usr/bin/xhost','+'])
-		air=self.inp_file.text()
-		try:
-			ins=subprocess.check_call(['pkexec','/usr/bin/air-helper-installer.py','install',air,tmp_icon])
-			self.install_err=False
-		except Exception as e:
-			self._debug(e)
-		subprocess.check_output(["xdg-mime","install","/usr/share/mime/packages/x-air-installer.xml"])
-		subprocess.check_output(["xdg-mime","default","/usr/share/applications/air-installer.desktop","/usr/share/mime/packages/x-air-installer.xml"],input=b"")
-		subprocess.check_call(['/usr/bin/xhost','-'])
-		self.showMsg(_("App %s installed succesfully"%os.path.basename(air)))
+#		tmp_icon=tempfile.mkstemp()[1]
+#		self.btn_icon.icon().pixmap(QSize(64,64)).save(tmp_icon,"PNG")
+#		subprocess.check_call(['/usr/bin/xhost','+'])
+#		air=self.inp_file.text()
+#		try:
+#			ins=subprocess.check_call(['pkexec','/usr/bin/air-helper-installer.py','install',air,tmp_icon])
+#			self.install_err=False
+#		except Exception as e:
+#			self._debug(e)
+#		subprocess.check_output(["xdg-mime","install","/usr/share/mime/packages/x-air-installer.xml"])
+#		subprocess.check_output(["xdg-mime","default","/usr/share/applications/air-installer.desktop","/usr/share/mime/packages/x-air-installer.xml"],input=b"")
+#		subprocess.check_call(['/usr/bin/xhost','-'])
+#		self.showMsg(_("App %s installed succesfully"%os.path.basename(air)))
+		app=self.inp_file.text()
+		if self.appmanager.localInstall(app):
+			self.showMsg(_("App %s installed succesfully"%os.path.basename(app)))
+		else:
+			self.showMsg(_("App %s could not be installed"%os.path.basename(app)))
 	#def writeConfig
 
 	def _setCss(self):
@@ -147,4 +131,3 @@ class installApp(confStack):
 			}"""
 		return(css)
 	#def _setCss
-
