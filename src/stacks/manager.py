@@ -164,7 +164,8 @@ class manager(confStack):
 			self.lst_appimage.setCellWidget(0,0,lbl)
 			cont+=1
 
-		self.lst_appimage.removeRow(cont)
+		while (cont<self.lst_appimage.rowCount()):
+			self.lst_appimage.removeRow(cont)
 		self.lst_appimage.resizeColumnsToContents()
 
 		return True
