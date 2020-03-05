@@ -32,12 +32,17 @@ class appmanager():
 				if line.startswith("Comment="):
 					data['desc']=line.split("=")[-1]
 		if data['icon']:
+			icn=''
 			output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.svg"%data['icon']])
 			if not output:
 				output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.png"%data['icon']])
 			if output:
-				icn=output.decode("utf-8").replace("\n","")
-				data['icon']=QIcon("./%s"%icn)
+				icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
+				if os.path.islink(icn):
+					output=subprocess.check_output(["%s"%app,"--appimage-extract","%s"%os.readlink(icn)])
+					if output:
+						icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
+				data['icon']=QIcon(icn)
 
 		if not data['icon']:
 			icn="x-appimage"
