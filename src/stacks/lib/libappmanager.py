@@ -16,6 +16,8 @@ class appmanager():
 	
 	def getAppData(self,app):
 		data={'name':'','desc':'','exe':'','icon':''}
+		oldDir=os.environ['PWD']
+		os.chdir("/tmp")
 		subprocess.run(["chmod","+x","%s"%app])
 		output=subprocess.check_output(["%s"%app,"--appimage-extract","*.desktop"])
 		output=output.decode("utf-8")
@@ -40,6 +42,11 @@ class appmanager():
 		if not data['icon']:
 			icn="x-appimage"
 			data['icon']=QIcon.fromTheme(icn)
+#		try:
+#			shutil.rmtree("/tmp","squashfs-root")
+#		except Exception as e:
+#			self._debug(e)
+		os.chdir(oldDir)
 		return(data)
 	#def _getAppData
 
