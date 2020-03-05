@@ -1,14 +1,9 @@
 #!/usr/bin/python3
-import sys
 import os
-import subprocess
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox, QListWidget,QFileDialog,QFrame
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt,QSize
 from appconfig.appConfigStack import appConfigStack as confStack
-from edupals.ui import QAnimatedStatusBar
-import shutil
-import tempfile
 from stacks.lib.libappmanager import appmanager as appmanager
 
 import gettext
@@ -75,10 +70,6 @@ class installApp(confStack):
 			self.inp_name.setText(data.get('name',''))
 			self.inp_desc.setText(data.get('desc',''))
 			self.btn_icon.setIcon(data.get('icon',''))
-			try:
-				shutil.rmtree("%s/squashfs-root"%os.path.dirname(app))
-			except:
-				pass
 		else:
 			self.inp_name.setText("")
 			self.inp_desc.setText("")
@@ -96,19 +87,6 @@ class installApp(confStack):
 	#def _udpate_screen
 	
 	def writeConfig(self):
-#		tmp_icon=tempfile.mkstemp()[1]
-#		self.btn_icon.icon().pixmap(QSize(64,64)).save(tmp_icon,"PNG")
-#		subprocess.check_call(['/usr/bin/xhost','+'])
-#		air=self.inp_file.text()
-#		try:
-#			ins=subprocess.check_call(['pkexec','/usr/bin/air-helper-installer.py','install',air,tmp_icon])
-#			self.install_err=False
-#		except Exception as e:
-#			self._debug(e)
-#		subprocess.check_output(["xdg-mime","install","/usr/share/mime/packages/x-air-installer.xml"])
-#		subprocess.check_output(["xdg-mime","default","/usr/share/applications/air-installer.desktop","/usr/share/mime/packages/x-air-installer.xml"],input=b"")
-#		subprocess.check_call(['/usr/bin/xhost','-'])
-#		self.showMsg(_("App %s installed succesfully"%os.path.basename(air)))
 		app=self.inp_file.text()
 		if self.appmanager.localInstall(app):
 			self.showMsg(_("App %s installed succesfully"%os.path.basename(app)))
