@@ -1,1 +1,2 @@
-/usr/share/appimage-manager/bin/appimage-manager.py /usr/bin/appimage-manager
+/usr/share/appimage-manager/bin/appimageManager.py /usr/bin/appimage-manager
+/usr/share/appimage-manager/bin/appimageInstaller.py /usr/bin/appimage-installer
