@@ -85,7 +85,11 @@ class appWidget(QWidget):
 		self.remove.emit(self)
 
 	def _executeAir(self):
+		cursor=QtGui.QCursor(Qt.WaitCursor)
+		self.setCursor(cursor)
 		self.pid=subprocess.Popen(self.app,stdin=None,stdout=None,stderr=None,shell=False)
+		cursor=QtGui.QCursor(Qt.ArrowCursor)
+		self.setCursor(cursor)
 	#def _executeAir(self):
 
 	def _setCss(self):
