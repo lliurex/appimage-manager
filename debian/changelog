@@ -1,3 +1,9 @@
+appimage-manager (1.0) bionic; urgency=medium
+
+  * Ported to python3-appconfig 
+
+ -- Juanma1980 <juanma1980@gmail.com>  Mon, 09 Mar 2020 10:17:26 +0100
+
 appimage-manager (0.3.2) bionic; urgency=medium
 
   * Install mode not hiding manage tab
