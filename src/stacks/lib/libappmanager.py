@@ -19,32 +19,40 @@ class appmanager():
 		oldDir=os.environ['PWD']
 		os.chdir("/tmp")
 		subprocess.run(["chmod","+x","%s"%app])
-		output=subprocess.check_output(["%s"%app,"--appimage-extract","*.desktop"])
-		output=output.decode("utf-8")
-		with open(output.replace("\n",""),'r') as f:
-			for line in f.readlines():
-				if line.startswith("Exec"):
-					data['exe']=line.split("=")[-1]
-				if line.startswith("Name="):
-					data['name']=line.split("=")[-1]
-				if line.startswith("Icon"):
-					data['icon']=line.split("=")[-1].strip()
-				if line.startswith("Comment="):
-					data['desc']=line.split("=")[-1]
+		output=subprocess.check_output(["%s"%app,"--appimage-extract","*.desktop"],stderr=subprocess.STDOUT)
+		output=output.decode("utf-8").replace("\n","")
+		if output.endswith("desktop"):
+			try:
+				with open(output,'r') as f:
+					for line in f.readlines():
+						if line.startswith("Exec"):
+							data['exe']=line.split("=")[-1]
+						if line.startswith("Name="):
+							data['name']=line.split("=")[-1]
+						if line.startswith("Icon"):
+							data['icon']=line.split("=")[-1].strip()
+						if line.startswith("Comment="):
+							data['desc']=line.split("=")[-1]
+			except Exception as e:
+				print("getAppData: %s"%e)
+		icn=''
 		if data['icon']:
-			icn=''
 			output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.svg"%data['icon']])
 			if not output:
-				output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.png"%data['icon']])
+				output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.png"%data['icon']],stderr=subprocess.STDOUT)
 			if output:
 				icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
 				if os.path.islink(icn):
 					output=subprocess.check_output(["%s"%app,"--appimage-extract","%s"%os.readlink(icn)])
 					if output:
 						icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
-				data['icon']=QIcon(icn)
+				if os.path.isfile(icn):
+					self._debug("Icon found at %s"%icn)
+					data['icon']=QIcon(icn)
+				else:
+					icn=''
 
-		if not data['icon']:
+		if not icn:
 			icn="x-appimage"
 			data['icon']=QIcon.fromTheme(icn)
 #		try:

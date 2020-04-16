@@ -45,6 +45,9 @@ class appWidget(QWidget):
 		self.setStyleSheet(self._setCss())
 	#def __init__
 
+	def mouseDoubleClickEvent(self,*args):
+		self._executeAir()
+
 	def getApp(self):
 		return(self.app)
 
@@ -117,7 +120,7 @@ class appWidget(QWidget):
 
 class manager(confStack):
 	def __init_stack__(self):
-		self.dbg=True
+		self.dbg=False
 		self._debug("manager load")
 		self.description=(_("Appimage Manager"))
 		self.menu_description=(_("Manage appimages"))
