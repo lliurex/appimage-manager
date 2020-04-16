@@ -12,11 +12,11 @@ _ = gettext.gettext
 class installApp(confStack):
 	def __init_stack__(self):
 		self.dbg=False
-		self._debug("installer load")
-		self.description=(_("Appimage Installer"))
-		self.menu_description=(_("Install appimages"))
+		self._debug("addApp load")
+		self.description=(_("Add Appimage"))
+		self.menu_description=(_("Add appimages"))
 		self.icon=('x-appimage')
-		self.tooltip=(_("From here you can install appimages on your system"))
+		self.tooltip=(_("From here you can add an appimages from your system"))
 		self.index=2
 		self.enabled=True
 		self.level='system'
@@ -37,7 +37,7 @@ class installApp(confStack):
 		box=QGridLayout()
 		box.addWidget(QLabel(_("Appimage")),0,0,1,1,Qt.AlignBottom)
 		self.inp_file=QLineEdit()
-		self.inp_file.setPlaceholderText(_("Choose file for install"))
+		self.inp_file.setPlaceholderText(_("Choose appimage to add"))
 		box.addWidget(self.inp_file,1,0,1,1,Qt.AlignTop)
 		btn_file=QPushButton("...")
 		btn_file.setObjectName("fileButton")
