@@ -9,6 +9,6 @@ Name=Install Appimage
 Name[ca_ES.UTF-8@valencia]=Instal·lar appimage
 Name[ca_ES@valencia]=Instal·lar appimage
 Name[ca]=Instal·lar appimage
-Name[es]Instalar appimage
+Name[es]=Instalar appimage
 Exec=appimage-installer %u
 Icon=x-appimage
