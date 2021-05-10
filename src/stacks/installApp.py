@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import os
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox, QListWidget,QFileDialog,QFrame
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt,QSize
+from PySide2.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox, QListWidget,QFileDialog,QFrame
+from PySide2 import QtGui
+from PySide2.QtCore import Qt,QSize
 from appconfig.appConfigStack import appConfigStack as confStack
 from stacks.lib.libappmanager import appmanager as appmanager
 

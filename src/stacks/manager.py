@@ -2,10 +2,10 @@
 import sys
 import os
 import subprocess
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox,QTableWidget, \
+from PySide2.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox,QTableWidget, \
 				QGraphicsDropShadowEffect, QHeaderView
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt,QSize,pyqtSignal
+from PySide2 import QtGui
+from PySide2.QtCore import Qt,QSize,Signal
 from appconfig.appConfigStack import appConfigStack as confStack
 from edupals.ui import QAnimatedStatusBar
 from stacks.lib.libappmanager import appmanager as appmanager
@@ -15,8 +15,8 @@ import gettext
 _ = gettext.gettext
 
 class appWidget(QWidget):
-	remove=pyqtSignal("PyQt_PyObject")
-	execute=pyqtSignal("PyQt_PyObject")
+	remove=Signal("PyObject")
+	execute=Signal("PyObject")
 	def __init__(self,appimage,parent=None):
 		super (appWidget,self).__init__(parent)
 		self.desktop=''
