@@ -6,7 +6,7 @@ import subprocess
 from app2menu import App2Menu
 
 err=0
-dbg=True
+dbg=False
 
 def _debug(msg):
 	if dbg:

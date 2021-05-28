@@ -9,7 +9,7 @@ import json
 import subprocess
 import grp,pwd
 
-dbg=True
+dbg=False
 retCode=0
 
 def _debug(msg):

@@ -6,7 +6,7 @@ from PySide2.QtGui import QIcon
 
 class appmanager():
 	def __init__(self):
-		self.dbg=True
+		self.dbg=False
 		self.appPath="%s/Applications"%os.environ["HOME"]
 
 	def _debug(self,msg):
