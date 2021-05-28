@@ -2,7 +2,7 @@
 import os
 import shutil
 import subprocess
-from PyQt5.QtGui import QIcon
+from PySide2.QtGui import QIcon
 
 class appmanager():
 	def __init__(self):
