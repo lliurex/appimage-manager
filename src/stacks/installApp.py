@@ -82,7 +82,7 @@ class installApp(QStackedWindowItem):
 		else:
 			self.inp_name.setText("")
 			self.inp_desc.setText("")
-			icon=QtGui.QIcon.fromTheme("x-appimage")
+			icon=QtGui.QIcon.fromTheme("appimage-manager")
 			self.btn_icon.setIcon(icon)
 			self.btn_icon.setIconSize(QSize(64,64))
 			self.frame.setEnabled(False)
