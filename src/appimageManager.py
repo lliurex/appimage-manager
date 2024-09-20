@@ -13,7 +13,7 @@ if os.path.islink(__file__)==True:
 else:
 	abspath=os.path.dirname(__file__)
 config.addStacksFromFolder(os.path.join(abspath,"stacks"))
-config.setBanner("/usr/share/appimage-manager/rsrc/appimage-manager_banner.png")
+config.setBanner("/usr/share/appimage-manager/rsrc/appimage_banner.png")
 #config.setWiki("https://wiki.edu.gva.es/lliurex/tiki-index.php?page=Repoman-en-Lliurex-21")
 config.setIcon("appimage-manager")
 config.show()

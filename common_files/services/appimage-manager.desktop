@@ -11,4 +11,4 @@ Name[ca_ES@valencia]=Instal·lar appimage
 Name[ca]=Instal·lar appimage
 Name[es]=Instalar appimage
 Exec=appimage-installer %u
-Icon=x-appimage
+Icon=appimage-manager
