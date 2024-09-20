@@ -2,16 +2,19 @@
 import sys
 import os
 from PySide2.QtWidgets import QApplication
-from appconfig.appConfigScreen import appConfigScreen as appConfig
-app=QApplication(["AppimageManager"])
-config=appConfig("AppimageManager",{'app':app})
-config.setRsrcPath("/usr/share/appimage-manager/rsrc")
-config.setIcon('x-appimage')
-config.setBanner('appimage_banner.png')
-config.setWiki('http://wiki.edu.gva.es/lliurex/tiki-index.php?page=Aplicacions-AppImage-al-LliureX')
-config.setBackgroundImage('drop_file.svg')
-config.setConfig(confDirs={'system':'/usr/share/appimage-manager','user':'%s/.config'%os.environ['HOME']},confFile="appimage-manageer.conf")
-config.Show()
-config.setFixedSize(config.width(),config.height())
-
+from QtExtraWidgets import QStackedWindow
+import gettext
+gettext.textdomain('appimagemanager')
+_ = gettext.gettext
+app=QApplication(["Appimage Manager"])
+config=QStackedWindow()
+if os.path.islink(__file__)==True:
+	abspath=os.path.join(os.path.dirname(__file__),os.path.dirname(os.readlink(__file__)))
+else:
+	abspath=os.path.dirname(__file__)
+config.addStacksFromFolder(os.path.join(abspath,"stacks"))
+config.setBanner("/usr/share/appimage-manager/rsrc/appimage-manager_banner.png")
+#config.setWiki("https://wiki.edu.gva.es/lliurex/tiki-index.php?page=Repoman-en-Lliurex-21")
+config.setIcon("appimage-manager")
+config.show()
 app.exec_()

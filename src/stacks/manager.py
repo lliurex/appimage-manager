@@ -6,13 +6,20 @@ from PySide2.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLa
 				QGraphicsDropShadowEffect, QHeaderView
 from PySide2 import QtGui
 from PySide2.QtCore import Qt,QSize,Signal
-from appconfig.appConfigStack import appConfigStack as confStack
-from edupals.ui import QAnimatedStatusBar
+from QtExtraWidgets import QStackedWindowItem
 from stacks.lib.libappmanager import appmanager as appmanager
 from app2menu import App2Menu
 
 import gettext
 _ = gettext.gettext
+
+i18n={"APP_UNINSTALLED":_("Uninstalled: "),
+	"BTN_REMOVE":_("Remove"),
+	"ERR_NOAPP":_("There're no appimages availables"),
+	"MENU":_("Appimage Manager"),
+	"MENU_DESC":_("Manage appimages"),
+	"MENU_TOOLTIP":_("From here you can manage the appimage availables on your system"),
+	}
 
 class appWidget(QWidget):
 	remove=Signal("PyObject")
@@ -36,7 +43,7 @@ class appWidget(QWidget):
 		box.addWidget(self.lbl_name,0,1,1,1,Qt.AlignLeft)
 		self.lbl_desc=QLabel("")
 		box.addWidget(self.lbl_desc,1,1,1,2,Qt.AlignLeft)
-		btn_remove=QPushButton(_("Remove"))
+		btn_remove=QPushButton(i18n["BTN_REMOVE"])
 		btn_remove.setObjectName("btnRemove")
 		btn_remove.clicked.connect(self._removeAir)
 		box.addWidget(btn_remove,0,2,1,1,Qt.AlignLeft)
@@ -52,7 +59,6 @@ class appWidget(QWidget):
 		return(self.app)
 
 	def setIcon(self,icon):
-		print(icon)
 		self.btn_icon.setIcon(icon)
 	#def setIcon
 
@@ -118,28 +124,29 @@ class appWidget(QWidget):
 
 #class airWidget
 
-class manager(confStack):
+class manager(QStackedWindowItem):
 	def __init_stack__(self):
 		self.dbg=False
 		self._debug("manager load")
-		self.description=(_("Appimage Manager"))
-		self.menu_description=(_("Manage appimages"))
-		self.icon=('dialog-password')
-		self.tooltip=(_("From here you can manage the appimage availables on your system"))
-		self.index=1
-		self.enabled=True
-		self.level='system'
+		self.setProps(shortDesc=i18n["MENU"],
+			longDesc=i18n["MENU_DESC"],
+			icon="document-new",
+			tooltip=_("Add custom repositories"),
+			index=1,
+			visible=True)
 		self.hideControlButtons()
 		self.appmanager=appmanager()
 		self.menu=App2Menu.app2menu()
+		self.lst_appimage=QTableWidget(0,1)
 		self.setStyleSheet(self._setCss())
 		self.widget=''
-		self.paths=["/usr/local/bin","%s/AppImages"%os.environ["HOME"],"%s/Applications"%os.environ["HOME"]]
+		self.paths=["/usr/local/bin",
+					os.path.join(os.environ["HOME"],"AppImages"),
+					os.path.join(os.environ["HOME"],"Applications")]
 	#def __init__
 	
-	def _load_screen(self):
+	def __initScreen__(self):
 		box=QVBoxLayout()
-		self.lst_appimage=QTableWidget(0,1)
 		self.lst_appimage.setShowGrid(False)
 		self.lst_appimage.horizontalHeader().hide()
 		self.lst_appimage.verticalHeader().hide()
@@ -166,7 +173,7 @@ class manager(confStack):
 							cont+=1
 		if cont==0:
 			self.lst_appimage.insertRow(0)
-			lbl=QLabel(_("There's no appimage available"))
+			lbl=QLabel(i18n["ERR_NOAPP"])
 			lbl.setStyleSheet("background:silver;border:0px;margin:0px")
 			self.lst_appimage.setCellWidget(0,0,lbl)
 			cont+=1
@@ -198,7 +205,7 @@ class manager(confStack):
 		if self.widget=='':
 			return
 		self.appmanager.localRemove(self.widget.getApp())
-		self.showMsg(_("App %s uninstalled"%self.widget.getName()))
+		self.showMsg("{0} {1}".format(i18n ["APP_UNINSTALLED"],self.widget.getName()))
 		self.updateScreen()
 	#def writeConfig
 
