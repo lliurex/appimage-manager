@@ -7,19 +7,19 @@ from PySide2.QtGui import QIcon
 class appmanager():
 	def __init__(self):
 		self.dbg=False
-		self.appPath="%s/Applications"%os.environ["HOME"]
+		self.appPath=os.path.join(os.environ["HOME"],"Applications")
 
 	def _debug(self,msg):
 		if self.dbg:
-			print("%s"%msg)
+			print("Appimage: {}".format(msg))
 	#def _debug
 	
 	def getAppData(self,app):
 		data={'name':'','desc':'','exe':'','icon':''}
 		oldDir=os.environ['PWD']
 		os.chdir("/tmp")
-		subprocess.run(["chmod","+x","%s"%app])
-		output=subprocess.check_output(["%s"%app,"--appimage-extract","*.desktop"],stderr=subprocess.STDOUT)
+		subprocess.run(["chmod","+x",app])
+		output=subprocess.check_output([app,"--appimage-extract","*.desktop"],stderr=subprocess.STDOUT)
 		output=output.decode("utf-8").replace("\n","")
 		if output.endswith("desktop"):
 			try:
@@ -37,23 +37,23 @@ class appmanager():
 				print("getAppData: %s"%e)
 		icn=''
 		if data['icon']:
-			output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.svg"%data['icon']])
+			output=subprocess.check_output([app,"--appimage-extract","i{}.svg".format(['icon'])])
 			if not output:
-				output=subprocess.check_output(["%s"%app,"--appimage-extract","%s.png"%data['icon']],stderr=subprocess.STDOUT)
+				output=subprocess.check_output([app,"--appimage-extract","{}.png".format(data['icon'])],stderr=subprocess.STDOUT)
 			if output:
 				icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
 				if os.path.islink(icn):
-					output=subprocess.check_output(["%s"%app,"--appimage-extract","%s"%os.readlink(icn)])
+					output=subprocess.check_output([app,"--appimage-extract",os.readlink(icn)])
 					if output:
 						icn=os.path.join("/tmp",output.decode("utf-8").replace("\n",""))
 				if os.path.isfile(icn):
-					self._debug("Icon found at %s"%icn)
+					self._debug("Icon found at {}".format(icn))
 					data['icon']=QIcon(icn)
 				else:
 					icn=''
 
 		if not icn:
-			icn="x-appimage"
+			icn="appimage-manager"
 			data['icon']=QIcon.fromTheme(icn)
 #		try:
 #			shutil.rmtree("/tmp","squashfs-root")
