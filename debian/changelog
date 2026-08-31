@@ -1,3 +1,9 @@
+appimage-manager (1.4.1) noble; urgency=medium
+
+  * PySide6 port
+
+ -- Juanma1980 <juanma1980@gmail.com>  Mon, 31 Aug 2026 11:27:55 +0200
+
 appimage-manager (1.4.0+lliurex25) noble; urgency=medium
 
   * Noble release
