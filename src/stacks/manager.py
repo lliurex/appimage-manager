@@ -2,10 +2,10 @@
 import sys
 import os
 import subprocess
-from PySide2.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox,QTableWidget, \
+from PySide6.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox,QTableWidget, \
 				QGraphicsDropShadowEffect, QHeaderView
-from PySide2 import QtGui
-from PySide2.QtCore import Qt,QSize,Signal
+from PySide6 import QtGui
+from PySide6.QtCore import Qt,QSize,Signal
 from QtExtraWidgets import QStackedWindowItem
 from stacks.lib.libappmanager import appmanager as appmanager
 from app2menu import App2Menu

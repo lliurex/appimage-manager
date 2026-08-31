@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from QtExtraWidgets import QStackedWindow
 import gettext
 gettext.textdomain('appimagemanager')
@@ -17,4 +17,4 @@ config.setBanner("/usr/share/appimage-manager/rsrc/appimage_banner.png")
 #config.setWiki("https://wiki.edu.gva.es/lliurex/tiki-index.php?page=Repoman-en-Lliurex-21")
 config.setIcon("appimage-manager")
 config.show()
-app.exec_()
+app.exec()
