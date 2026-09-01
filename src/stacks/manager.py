@@ -19,7 +19,7 @@ i18n={"APP_UNINSTALLED":_("Uninstalled: "),
 	"ERR_NOAPP":_("There're no appimages availables"),
 	"MENU":_("Manage"),
 	"MENU_DESC":_("Manage appimages"),
-	"MENU_TOOLTIP":_("From here you can manage the appimage availables on your system"),
+	"MENU_TOOLTIP":_("Manage installed appimages"),
 	}
 
 class exeApp(QThread):
