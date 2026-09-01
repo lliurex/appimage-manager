@@ -5,7 +5,7 @@ import subprocess
 from PySide6.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox,QTableWidget, \
 				QGraphicsDropShadowEffect, QHeaderView
 from PySide6 import QtGui
-from PySide6.QtCore import Qt,QSize,Signal
+from PySide6.QtCore import Qt,QSize,Signal,QThread
 from QtExtraWidgets import QStackedWindowItem
 from stacks.lib.libappmanager import appmanager as appmanager
 from app2menu import App2Menu
@@ -14,12 +14,28 @@ import gettext
 _ = gettext.gettext
 
 i18n={"APP_UNINSTALLED":_("Uninstalled: "),
-	"BTN_REMOVE":_("Remove"),
+	"APPLAUNCH":_("Launch"),
+	"APPREMOVE":_("Remove"),
 	"ERR_NOAPP":_("There're no appimages availables"),
 	"MENU":_("Manage"),
 	"MENU_DESC":_("Manage appimages"),
 	"MENU_TOOLTIP":_("From here you can manage the appimage availables on your system"),
 	}
+
+class exeApp(QThread):
+	def __init__(self,parent=None):
+		super (exeApp,self).__init__(parent)
+		self.app=None
+	#def __init__
+
+	def setApp(self,app):
+		self.app=app
+	#def setApp
+
+	def run(self):
+		subprocess.run(self.app,stdin=None,stdout=None,stderr=None,shell=False)
+	#def run
+#class exeApp
 
 class appWidget(QWidget):
 	remove=Signal("PyObject")
@@ -28,101 +44,104 @@ class appWidget(QWidget):
 		super (appWidget,self).__init__(parent)
 		self.desktop=''
 		self.app=appimage
+		self.exeApp=exeApp()
+		self.exeApp.finished.connect(self._endExecuteApp)
+		self.__initScreen__()
+	#def __init__
+
+	def __initScreen__(self,*args):
+		fontBtn=self.font()
+		fontBtn.setPointSize(fontBtn.pointSize()-2)
 		box=QGridLayout()
 		box.setColumnStretch(0,-1)
 		box.setColumnStretch(1,1)
-		self.btn_icon=QPushButton()
+		self.btnIcon=QPushButton()
 		effect=QGraphicsDropShadowEffect(blurRadius=5,xOffset=3,yOffset=3)
-		self.btn_icon.setGraphicsEffect(effect)
-		self.btn_icon.setIconSize(QSize(64,64))
-		self.btn_icon.setMinimumHeight(72)
-		self.btn_icon.clicked.connect(self._executeAir)
-		box.addWidget(self.btn_icon,0,0,2,1,Qt.AlignLeft)
-		self.lbl_name=QLabel("")
-		self.lbl_name.setObjectName("appName")
-		box.addWidget(self.lbl_name,0,1,1,1,Qt.AlignLeft)
-		self.lbl_desc=QLabel("")
-		box.addWidget(self.lbl_desc,1,1,1,2,Qt.AlignLeft)
-		btn_remove=QPushButton(i18n["BTN_REMOVE"])
-		btn_remove.setObjectName("btnRemove")
-		btn_remove.clicked.connect(self._removeAir)
-		box.addWidget(btn_remove,0,2,1,1,Qt.AlignLeft)
+		self.btnIcon.setGraphicsEffect(effect)
+		self.btnIcon.setIconSize(QSize(64,64))
+		self.btnIcon.setMinimumHeight(72)
+		#self.btnIcon.clicked.connect(self._executeApp)
+		box.addWidget(self.btnIcon,0,0,2,1,Qt.AlignLeft)
+		self.lblName=QLabel("")
+		self.lblName.setObjectName("appName")
+		box.addWidget(self.lblName,0,1,1,1,Qt.AlignLeft)
+		self.lblDesc=QLabel("")
+		box.addWidget(self.lblDesc,1,1,1,3,Qt.AlignLeft)
+		self.btnLaunch=QPushButton(i18n["APPLAUNCH"])
+		self.btnLaunch.setFont(fontBtn)
+		self.btnLaunch.setObjectName("btnLaunch")
+		self.btnLaunch.clicked.connect(self._executeApp)
+		self.btnLaunch.setCursor(Qt.PointingHandCursor)
+		box.addWidget(self.btnLaunch,0,2,1,1,Qt.AlignLeft)
+		self.btnRemove=QPushButton(i18n["APPREMOVE"])
+		self.btnRemove.setFont(fontBtn)
+		self.btnRemove.setObjectName("btnRemove")
+		self.btnRemove.clicked.connect(self._removeApp)
+		self.btnRemove.setCursor(Qt.PointingHandCursor)
+		box.addWidget(self.btnRemove,0,3,1,1,Qt.AlignLeft)
 		self.setObjectName("cell")
 		self.setLayout(box)
 		self.setStyleSheet(self._setCss())
-	#def __init__
+	#def __initScreen__
 
 	def mouseDoubleClickEvent(self,*args):
-		self._executeAir()
+		self._executeApp()
+	#def mouseDoubleClickEvent
 
 	def getApp(self):
 		return(self.app)
 
 	def setIcon(self,icon):
-		self.btn_icon.setIcon(icon)
+		self.btnIcon.setIcon(icon)
 	#def setIcon
 
-	def setDesktop(self,desktop):
-		self.desktop=desktop
-	#def setName
-
-	def getDesktop(self):
-		return(self.desktop)
-
 	def setName(self,name):
-		self.lbl_name.setText(name)
+		self.lblName.setText(name)
 	#def setName
 
 	def getName(self):
-		return(self.lbl_name.text())
+		return(self.lblName.text())
+	#def getName
 
 	def setDesc(self,desc):
-		self.lbl_desc.setText(desc)
+		self.lblDesc.setText(desc)
 	#def setDesc
-	
-	def getDesc(self):
-		return(self.lbl_desc.text())
-	
-	def getIcon(self):
-		return(self.lbl_desc.text())
 	
 	def setExe(self,exe):
 		self.exe=exe.replace("'","")
 	#def setExe
 
-	def _removeAir(self):
+	def _removeApp(self):
 		self.remove.emit(self)
+	#def _removeApp
 
-	def _executeAir(self):
+	def _executeApp(self):
 		cursor=QtGui.QCursor(Qt.WaitCursor)
-		self.setCursor(cursor)
-		self.pid=subprocess.Popen(self.app,stdin=None,stdout=None,stderr=None,shell=False)
-		cursor=QtGui.QCursor(Qt.ArrowCursor)
-		self.setCursor(cursor)
-	#def _executeAir(self):
+		self.btnLaunch.setCursor(cursor)
+		cursor=QtGui.QCursor(Qt.ForbiddenCursor)
+		self.btnRemove.setCursor(cursor)
+		self.blockSignals(True)
+		self.exeApp.setApp(self.app)
+		self.exeApp.start()
+	#def _executeApp(self):
+
+	def _endExecuteApp(self):
+		cursor=QtGui.QCursor(Qt.PointingHandCursor)
+		self.btnLaunch.setCursor(cursor)
+		self.btnRemove.setCursor(cursor)
+		self.blockSignals(False)
+	#def _endExecuteApp
 
 	def _setCss(self):
 		css="""
-		#cell{
-			padding:10px;
-			margin:6px;
-			background-color:rgb(250,250,250);
-		}
-
-		#appName{
-			font-weight:bold;
-			border:0px;
-		}
 		#btnRemove{
 			background:red;
 			color:white;
-			font-size:9pt;
-			padding:3px;
-			margin:3px;
-		}"""
+		}
+		"""
 	#def _setCss
 
-#class airWidget
+#class appWidget
 
 class manager(QStackedWindowItem):
 	def __init_stack__(self):
@@ -130,57 +149,54 @@ class manager(QStackedWindowItem):
 		self._debug("manager load")
 		self.setProps(shortDesc=i18n["MENU"],
 			longDesc=i18n["MENU_DESC"],
-			icon="document-new",
+			icon="systemsettings",
 			tooltip=_("Add custom repositories"),
 			index=1,
 			visible=True)
 		self.hideControlButtons()
 		self.appmanager=appmanager()
 		self.menu=App2Menu.app2menu()
-		self.lst_appimage=QTableWidget(0,1)
+		self.lstAppimage=QTableWidget(0,1)
 		self.setStyleSheet(self._setCss())
 		self.widget=''
-		self.paths=["/usr/local/bin",
+		self.paths=[os.path.join(os.environ["HOME"],"Applications"),
 					os.path.join(os.environ["HOME"],"AppImages"),
-					os.path.join(os.environ["HOME"],"Applications")]
+					os.path.join(os.environ["HOME"],"Appimages"),
+					os.path.join(os.environ["HOME"],".local","bin"),
+					"/usr/local/bin"]
 	#def __init__
 	
 	def __initScreen__(self):
 		box=QVBoxLayout()
-		self.lst_appimage.setShowGrid(False)
-		self.lst_appimage.horizontalHeader().hide()
-		self.lst_appimage.verticalHeader().hide()
-		self.lst_appimage.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-		self.lst_appimage.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-		box.addWidget(self.lst_appimage)
+		self.lstAppimage.setShowGrid(False)
+		self.lstAppimage.horizontalHeader().hide()
+		self.lstAppimage.verticalHeader().hide()
+		self.lstAppimage.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+		self.lstAppimage.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+		box.addWidget(self.lstAppimage)
 		self.setLayout(box)
 		self.updateScreen()
 		return(self)
 	#def _load_screen
 
 	def updateScreen(self):
-		self.lst_appimage.clear()
-		cont=0
+		self.lstAppimage.setRowCount(0)
 		for path in self.paths:
 			if os.path.isdir(path):
-				for fn in os.listdir(path):
-					if fn.endswith("appimage"):
-						appCell=self._paintCell(os.path.join(path,fn))
+				for f in os.scandir(path):
+					if f.name.lower().endswith(".appimage"):
+						appCell=self._paintCell(f.path)
 						if appCell:
-							self.lst_appimage.insertRow(cont)
-							self.lst_appimage.setCellWidget(cont,0,appCell)
-							self.lst_appimage.resizeRowToContents(cont)
-							cont+=1
-		if cont==0:
-			self.lst_appimage.insertRow(0)
+							self.lstAppimage.setRowCount(self.lstAppimage.rowCount()+1)
+							self.lstAppimage.setCellWidget(self.lstAppimage.rowCount()-1,0,appCell)
+							self.lstAppimage.resizeRowToContents(self.lstAppimage.rowCount()-1)
+		if self.lstAppimage.rowCount()==0:
+			self.lstAppimage.insertRow(0)
 			lbl=QLabel(i18n["ERR_NOAPP"])
 			lbl.setStyleSheet("background:silver;border:0px;margin:0px")
-			self.lst_appimage.setCellWidget(0,0,lbl)
-			cont+=1
+			self.lstAppimage.setCellWidget(0,0,lbl)
 
-		while (cont<self.lst_appimage.rowCount()):
-			self.lst_appimage.removeRow(cont)
-		self.lst_appimage.resizeColumnsToContents()
+		self.lstAppimage.resizeColumnsToContents()
 
 		return True
 	#def _udpate_screen
@@ -191,7 +207,6 @@ class manager(QStackedWindowItem):
 			data=self.appmanager.getAppData(appimage)
 			if data.get('name',''):
 				widget=appWidget(appimage)
-#				widget.setDesktop(airApp.get('desktop'))
 				widget.remove.connect(self._removeApp)
 				widget.setName(data['name'])
 #				icon=desktop.get('Icon','')
@@ -212,7 +227,7 @@ class manager(QStackedWindowItem):
 	def _removeApp(self,widget):
 		self.widget=widget
 		self.writeConfig()
-	#def _removeAir
+	#def _removeApp
 
 	def _setCss(self):
 		css="""
@@ -229,7 +244,6 @@ class manager(QStackedWindowItem):
 		#btnRemove{
 			background:red;
 			color:white;
-			font-size:9pt;
 			padding:3px;
 			margin:3px;
 		}
