@@ -4,7 +4,7 @@ import os
 from PySide6.QtWidgets import QApplication
 from QtExtraWidgets import QStackedWindow
 import gettext
-gettext.textdomain('appimagemanager')
+gettext.textdomain('appimage-manager')
 _ = gettext.gettext
 app=QApplication(["Appimage Manager"])
 config=QStackedWindow()
