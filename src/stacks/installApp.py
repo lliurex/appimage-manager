@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import os
-from PySide6.QtWidgets import QApplication, QLabel, QWidget, QPushButton,QVBoxLayout,QLineEdit,QGridLayout,QHBoxLayout,QComboBox,QCheckBox, QListWidget,QFileDialog,QFrame
+from PySide6.QtWidgets import QApplication, QLabel, QPushButton,QLineEdit,QGridLayout,QFileDialog,QFrame
 from PySide6 import QtGui
 from PySide6.QtCore import Qt,QSize
 from QtExtraWidgets import QStackedWindowItem
@@ -25,7 +25,7 @@ class installApp(QStackedWindowItem):
 		self._debug("addApp load")
 		self.setProps(shortDesc=i18n["MENU"],
 			longDesc=i18n["MENU_DESC"],
-			icon="document-new",
+			icon="install",
 			tooltip=i18n["MENU_TOOLTIP"],
 			index=2,
 			visible=True)
@@ -48,11 +48,13 @@ class installApp(QStackedWindowItem):
 		box.addWidget(QLabel("Appimage"),0,0,1,1,Qt.AlignBottom)
 		self.inp_file=QLineEdit()
 		self.inp_file.setPlaceholderText(i18n["APP_ADD"])
-		box.addWidget(self.inp_file,1,0,1,1,Qt.AlignTop)
+		box.addWidget(self.inp_file,1,0,1,1)
 		btn_file=QPushButton("...")
 		btn_file.setObjectName("fileButton")
+		btn_file.setMinimumWidth(32)
+		btn_file.setMinimumHeight(self.inp_file.sizeHint().height())
 		btn_file.clicked.connect(self._fileChooser)
-		box.addWidget(btn_file,1,1,1,1,Qt.AlignLeft|Qt.AlignTop)
+		box.addWidget(btn_file,1,1,1,1,Qt.AlignLeft)
 		self.frame=QFrame()
 		box.addWidget(self.frame,2,0,1,1,Qt.AlignTop)
 		framebox=QGridLayout()
@@ -70,6 +72,7 @@ class installApp(QStackedWindowItem):
 		self.inp_desc.setPlaceholderText(i18n["APP_DESC"])
 		framebox.addWidget(self.inp_desc,3,0,1,2,Qt.AlignTop)
 		self.setLayout(box)
+		self.btnAccept.clicked.connect(self.writeConfig)
 		return(self)
 	#def __initScreen__
 
@@ -99,6 +102,7 @@ class installApp(QStackedWindowItem):
 		app=self.inp_file.text()
 		if self.appmanager.localInstall(app):
 			self.showMsg("{0}: {1}".format(i18n["INSTALL_OK"],os.path.basename(app)))
+			self.btnAccept.setEnabled(False)
 		else:
 			self.showMsg("{0}: {1}".format(i18n["INSTALL_KO"],os.path.basename(app)))
 	#def writeConfig
