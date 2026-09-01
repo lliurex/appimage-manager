@@ -14,7 +14,7 @@ retCode=0
 
 def _debug(msg):
 	if dbg:
-		print("App installer: %s"%msg)
+		print("App installer: {}".format(msg))
 #def _debug
 
 def _generate_install_dir():
@@ -26,7 +26,7 @@ def _generate_install_dir():
 		_debug("Couldn't create temp dir")
 		retCode=1
 	os.chown(installDir,os.geteuid(),os.getgid())
-	_debug("Install dir: %s"%installDir)
+	_debug("Install dir: {}".format(installDir))
 	return (installDir)
 #def _generate_install_dir
 
@@ -43,7 +43,7 @@ def _begin_install_package(app):
 	if ((os.path.isfile(app))):# and (mime.from_file(app)=='application/x-app-installer')):
 		_generate_epi_file(app)
 	else:
-		_debug("%s is an invalid file %s"%(app,mime.from_file(app)))
+		_debug("{0} is an invalid file {1}".format(app,mime.from_file(app)))
 		retCode=1
 #def _begin_install_package
 
@@ -54,12 +54,12 @@ def _generate_epi_json(app):
 	epiJson=''
 	#retCode controls the return code of the previous operations 
 	if not retCode:
-		_debug("Generating json at %s"%tmpDir)
-		epiJson="%s/%s.epi"%(tmpDir,appName.replace(" ","_"))
+		_debug("Generating json at {}".format(tmpDir))
+		epiJson=os.path.join(tmpDir,"{}.epi".format(appName.replace(" ","_")))
 		epiFile={}
 		epiFile["type"]="file"
 		epiFile["pkg_list"]=[{"name":appName,'url_download':tmpDir,'version':{'all':appName}}]
-		epiFile["script"]={"name":"%s/install_script.sh"%tmpDir,'remove':True,'download':True}
+		epiFile["script"]={"name":"{}/install_script.sh".format(tmpDir),'remove':True,'download':True}
 		epiFile["required_root"]=False
 		epiFile["required_dconf"]=True
 		try:
@@ -67,7 +67,7 @@ def _generate_epi_json(app):
 				json.dump(epiFile,f,indent=4)
 			_debug("OK")
 		except Exception as e:
-			_debug("Error %s"%e)
+			_debug("Error {}".format(e))
 			retCode=1
 	return(epiJson)
 #def _generate_epi_json
@@ -78,13 +78,13 @@ def _generate_epi_script(app):
 	appName=os.path.basename(app)
 	try:
 		#Copy the icon to temp folder
-		with open("%s/install_script.sh"%tmpDir,'w') as f:
+		with open("{}/install_script.sh".format(tmpDir),'w') as f:
 			f.write("#!/bin/bash\n")
 			f.write("DESTDOWNLOAD=\"/var/cache/epi-downloads\"\n")
 			f.write("ACTION=\"$1\"\n")
 			f.write("case $ACTION in\n")
 			f.write("\tremove)\n")
-			f.write("\t\trm -fr %s\n"%app)
+			f.write("\t\trm -fr {}\n".format(app))
 			f.write("\t\t;;\n")
 			f.write("\ttestInstall)\n")
 			f.write("\t\techo ""\n")
@@ -93,10 +93,10 @@ def _generate_epi_script(app):
 			f.write("\t\ttouch /tmp/abc\n")
 			f.write("\t\t;;\n")
 			f.write("\tinstallPackage)\n")
-			f.write("\t\techo %s\n"%app)
-			f.write("\t\tcp %s $HOME/Applications\n"%(app))
-			f.write("\t\tchmod +x $HOME/Applications/%s\n"%(appName))
-			f.write("\t\techo %s is now available at appimage-manager"%appName)
+			f.write("\t\techo {}\n".format(app))
+			f.write("\t\tcp {} $HOME/Applications\n".format(app))
+			f.write("\t\tchmod +x $HOME/Applications/{}\n".format(appName))
+			f.write("\t\techo {} is now available at appimage-manager".format(appName))
 			f.write("\t\t;;\n")
 			f.write("\tgetInfo)\n")
 			f.write("\t\techo \"\"\n")
@@ -104,9 +104,9 @@ def _generate_epi_script(app):
 			f.write("esac\n")
 			f.write("exit 0\n")
 	except Exception as e:
-		_debug("%s"%e)
+		_debug(e)
 		retCode=1
-	os.chmod("%s/install_script.sh"%tmpDir,0o755)
+	os.chmod("{}/install_script.sh".format(tmpDir),0o755)
 #def _generate_epi_script
 
 def _generate_epi_file(app):
@@ -116,18 +116,20 @@ def _generate_epi_file(app):
 		#copy app to installDir
 		try:
 			appName=os.path.basename(app)
-			shutil.copyfile(app,"%s/%s"%(installDir,appName))
-			app="%s/%s"%(installDir,appName)
-			_debug("%s copied to %s"%(app,installDir))
+			destPath=os.path.join(installDir,appName)
+			shutil.copyfile(app,destPath)
+			_debug("{0} copied to {1}".format(app,installDir))
 		except Exception as e:
-			_debug("%s couldn't be copied to %s: %s"%(app,installDir,e))
+			_debug("{0} couldn't be copied to {1}: {2}".format(app,installDir,e))
 			retCode=1
+		else:
+			app=destPath
 		
 		if not retCode:
 			epiJson=_generate_epi_json(app)
 			_generate_epi_script(app)
 			if not retCode:
-				_debug("Launching %s"%epiJson)
+				_debug("Launching {}".format(epiJson))
 				subprocess.run(['epi-gtk',epiJson])
 			else:
 				subprocess.run(['epi-gtk',"--error"])
