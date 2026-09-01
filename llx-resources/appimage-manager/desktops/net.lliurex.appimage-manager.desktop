@@ -12,5 +12,5 @@ Comment[ca_ES@valencia]=Gestiona les appimages del sistema
 Exec=/usr/bin/appimage-manager
 Terminal=false
 Type=Application
-Icon=x-appimage
-Categories=QT;KDE;LliureX-Administration
+Icon=appimage-manager
+Categories=Utility;LliureX-Administration
