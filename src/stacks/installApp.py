@@ -25,7 +25,7 @@ class installApp(QStackedWindowItem):
 		self._debug("addApp load")
 		self.setProps(shortDesc=i18n["MENU"],
 			longDesc=i18n["MENU_DESC"],
-			icon="document-new",
+			icon="install",
 			tooltip=i18n["MENU_TOOLTIP"],
 			index=2,
 			visible=True)
@@ -72,6 +72,7 @@ class installApp(QStackedWindowItem):
 		self.inp_desc.setPlaceholderText(i18n["APP_DESC"])
 		framebox.addWidget(self.inp_desc,3,0,1,2,Qt.AlignTop)
 		self.setLayout(box)
+		self.btnAccept.clicked.connect(self.writeConfig)
 		return(self)
 	#def __initScreen__
 
@@ -101,6 +102,7 @@ class installApp(QStackedWindowItem):
 		app=self.inp_file.text()
 		if self.appmanager.localInstall(app):
 			self.showMsg("{0}: {1}".format(i18n["INSTALL_OK"],os.path.basename(app)))
+			self.btnAccept.setEnabled(False)
 		else:
 			self.showMsg("{0}: {1}".format(i18n["INSTALL_KO"],os.path.basename(app)))
 	#def writeConfig
