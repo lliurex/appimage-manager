@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 09:43+0200\n"
+"POT-Creation-Date: 2026-09-01 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,114 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/appimage-manager.py:93
+#: ../src/stacks/installApp.py:12
+msgid "Choose appimage to add"
+msgstr ""
+
+#: ../src/stacks/installApp.py:13
+msgid "Application description"
+msgstr ""
+
+#: ../src/stacks/installApp.py:14
+msgid "Appication name"
+msgstr ""
+
+#: ../src/stacks/installApp.py:15
+msgid "Push for icon change"
+msgstr ""
+
+#: ../src/stacks/installApp.py:16
+msgid "Installed"
+msgstr ""
+
+#: ../src/stacks/installApp.py:17
+msgid "Install failed: "
+msgstr ""
+
+#: ../src/stacks/installApp.py:18
+msgid "Add Appimage"
+msgstr ""
+
+#: ../src/stacks/installApp.py:19
+msgid "Add appimages"
+msgstr ""
+
+#: ../src/stacks/installApp.py:20
+msgid "Add downloaded appimages as system applications"
+msgstr ""
+
+#: ../src/stacks/manager.py:16
+msgid "Uninstalled: "
+msgstr ""
+
+#: ../src/stacks/manager.py:17
+msgid "Launch"
+msgstr ""
+
+#: ../src/stacks/manager.py:18
+msgid "Remove"
+msgstr ""
+
+#: ../src/stacks/manager.py:19
+msgid "There're no appimages availables"
+msgstr ""
+
+#: ../src/stacks/manager.py:20
 msgid "Manage"
 msgstr ""
 
-#: ../src/appimage-manager.py:95 ../src/appimage-manager.py:123
-msgid "Install"
+#: ../src/stacks/manager.py:21
+msgid "Manage appimages"
 msgstr ""
 
-#: ../src/appimage-manager.py:111
-#, python-format
-msgid "Removed %s"
+#: ../src/stacks/manager.py:22
+msgid "Manage installed appimages"
 msgstr ""
 
-#: ../src/appimage-manager.py:114
-#, python-format
-msgid "Error removing %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:142
-msgid "Show system apps"
-msgstr ""
-
-#: ../src/appimage-manager.py:144
-msgid "Show local apps"
-msgstr ""
-
-#: ../src/appimage-manager.py:214
-#, python-format
-msgid "Remove %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:222
-#, python-format
-msgid "Execute %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:235
-#, python-format
-msgid "Install %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:260 ../src/appimage-manager.py:282
-#, python-format
-msgid ""
-"Name: %s\n"
-"Description: %s\n"
-"Icon: %s\n"
-"Category: %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:270 ../src/appimage-manager.py:294
-#, python-format
-msgid "%s the application %s"
-msgstr ""
-
-#: ../src/appimage-manager.py:281
-msgid ""
-"Push button to set the icon,\n"
-" name and category for the app\n"
-" or use default ones"
-msgstr ""
-
-#: ../src/appimage-manager.py:297
-msgid "Press button to select an appimage for install"
-msgstr ""
-
-#: ../src/appimage-manager.py:305
-msgid "Install appimage"
-msgstr ""
-
-#: ../src/appimage-manager.py:319
-msgid "images(*.png *.xpm *jpg)"
-msgstr ""
-
-#: ../src/appimage-manager.py:349
-msgid "Icon: "
-msgstr ""
-
-#: ../src/appimage-manager.py:360
-msgid "Name: "
-msgstr ""
-
-#: ../src/appimage-manager.py:363
-msgid "Desktop name"
-msgstr ""
-
-#: ../src/appimage-manager.py:367
-msgid "Category: "
-msgstr ""
-
-#: ../src/appimage-manager.py:378
-msgid "Description: "
-msgstr ""
-
-#: ../src/appimage-manager.py:381
-msgid "Description"
-msgstr ""
-
-#: ../src/appimage-manager.py:413
-#, python-format
-msgid "%s installed"
-msgstr ""
-
-#: ../src/appimage-manager.py:417
-msgid "Install Failed"
-msgstr ""
-
-#: ../src/appimage-manager.py:436
-#, python-format
-msgid "Error executing %s"
+#: ../src/stacks/manager.py:153
+msgid "Add custom repositories"
 msgstr ""

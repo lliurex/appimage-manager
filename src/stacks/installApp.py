@@ -17,7 +17,7 @@ i18n={"APP_ADD":_("Choose appimage to add"),
 	"INSTALL_KO":_("Install failed: "),
 	"MENU":_("Add Appimage"),
 	"MENU_DESC":_("Add appimages"),
-	"MENU_TOOLTIP":_("From here you can add an appimages from your system"),
+	"MENU_TOOLTIP":_("Add downloaded appimages as system applications"),
 	}
 class installApp(QStackedWindowItem):
 	def __init_stack__(self):

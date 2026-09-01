@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-01 09:57+0200\n"
+"PO-Revision-Date: 2026-09-01 09:58+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#: ../src/stacks/installApp.py:12
+msgid "Choose appimage to add"
+msgstr "Seleccionar aplicación"
+
+#: ../src/stacks/installApp.py:13
+msgid "Application description"
+msgstr "Descripción"
+
+#: ../src/stacks/installApp.py:14
+msgid "Appication name"
+msgstr "Nombre"
+
+#: ../src/stacks/installApp.py:15
+msgid "Push for icon change"
+msgstr "Pulsar para cambiar icono"
+
+#: ../src/stacks/installApp.py:16
+msgid "Installed"
+msgstr "Instalada"
+
+#: ../src/stacks/installApp.py:17
+msgid "Install failed: "
+msgstr "Error instalando"
+
+#: ../src/stacks/installApp.py:18
+msgid "Add Appimage"
+msgstr "Añadir appimage"
+
+#: ../src/stacks/installApp.py:19
+msgid "Add appimages"
+msgstr "Añadir appimages"
+
+#: ../src/stacks/installApp.py:20
+msgid "Add downloaded appimages as system applications"
+msgstr "Añadir appimages como aplicaciones de sistema"
+
+#: ../src/stacks/manager.py:16
+msgid "Uninstalled: "
+msgstr "Desinstalada:"
+
+#: ../src/stacks/manager.py:17
+msgid "Launch"
+msgstr "Ejecutar"
+
+#: ../src/stacks/manager.py:18
+msgid "Remove"
+msgstr "Eliminar"
+
+#: ../src/stacks/manager.py:19
+msgid "There're no appimages availables"
+msgstr "No hay aplicaciones disponibles"
+
+#: ../src/stacks/manager.py:20
+msgid "Manage"
+msgstr "Gestionar"
+
+#: ../src/stacks/manager.py:21
+msgid "Manage appimages"
+msgstr "Gestionar appimages"
+
+#: ../src/stacks/manager.py:22
+msgid "Manage installed appimages"
+msgstr "Gestionar las appimages instaladas"
+
+#: ../src/stacks/manager.py:153
+msgid "Add custom repositories"
+msgstr "Agregar repositorio personalizado"
+
+#, python-format
+#~ msgid "Removed %s"
+#~ msgstr "%s eliminada"
+
+#, python-format
+#~ msgid "Error removing %s"
+#~ msgstr "Error eliminando %s"
+
+#~ msgid "Show system apps"
+#~ msgstr "Mostrar aplicaciones instaladas"
+
+#~ msgid "Show local apps"
+#~ msgstr "Mostrar aplicaciones del usuario"
+
+#, python-format
+#~ msgid "Execute %s"
+#~ msgstr "Ejecutar %s"
+
+#, python-format
+#~ msgid "Install %s"
+#~ msgstr "Instalar %s"
+
+#, python-format
+#~ msgid ""
+#~ "Name: %s\n"
+#~ "Description: %s\n"
+#~ "Icon: %s\n"
+#~ "Category: %s"
+#~ msgstr ""
+#~ "Nombre: %s\n"
+#~ "Descripción: %s\n"
+#~ "Icono: %s\n"
+#~ "Categoría: %s"
+
+#, python-format
+#~ msgid "%s the application %s"
+#~ msgstr "%s la aplicación %s"
+
+#~ msgid ""
+#~ "Push button to set the icon,\n"
+#~ " name and category for the app\n"
+#~ " or use default ones"
+#~ msgstr ""
+#~ "Presiona para seleccionar el icono,\n"
+#~ " nombre y categoría de la aplicación\n"
+#~ " o usa valores por defecto"
+
+#~ msgid "Press button to select an appimage for install"
+#~ msgstr "Pulsa para seleccionar una appimage a instalar"
+
+#~ msgid "images(*.png *.xpm *jpg)"
+#~ msgstr "imágenes(*.png *.xpm *jpg)"
+
+#~ msgid "Icon: "
+#~ msgstr "Icono: "
+
+#~ msgid "Name: "
+#~ msgstr "Nombre: "
+
+#~ msgid "Desktop name"
+#~ msgstr "Nombre del desktop"
+
+#~ msgid "Category: "
+#~ msgstr "Categoría: "
+
+#~ msgid "Description: "
+#~ msgstr "Descripción: "
+
+#~ msgid "Description"
+#~ msgstr "Descripción"
+
+#, python-format
+#~ msgid "Error executing %s"
+#~ msgstr "Error al ejecutar %s"
+
+#~ msgid "Set desc: "
+#~ msgstr "Descripción:"
