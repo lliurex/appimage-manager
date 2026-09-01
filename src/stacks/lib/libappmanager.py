@@ -17,7 +17,15 @@ class appmanager():
 	def getAppData(self,app):
 		data={'name':'','desc':'','exe':'','icon':''}
 		oldDir=os.environ['PWD']
+	#	try:
+	#		shutil.rmtree("/tmp","squashfs-root")
+	#	except Exception as e:
+	#		self._debug(e)
 		os.chdir("/tmp")
+		if os.path.exists("/tmp/squashfs-root"):
+			for f in os.scandir("/tmp/squashfs-root"):
+				if f.name.endswith(".desktop"):
+					os.unlink(f.path)
 		subprocess.run(["chmod","+x",app])
 		subprocess.run([app,"--appimage-extract","*.desktop"],stderr=subprocess.STDOUT)
 		output=""
@@ -58,10 +66,6 @@ class appmanager():
 		if not icn:
 			icn="appimage-manager"
 			data['icon']=QIcon.fromTheme(icn)
-#		try:
-#			shutil.rmtree("/tmp","squashfs-root")
-#		except Exception as e:
-#			self._debug(e)
 		os.chdir(oldDir)
 		self._debug("DATA: {}".format(data))
 		return(data)
@@ -69,9 +73,9 @@ class appmanager():
 
 	def localInstall(self,app):
 		retval=False
-		if not os.path.isdir(self.appPath):
+		if not os.path.exists(self.appPath):
 			try:
-				os.makedirs(self.path)
+				os.makedirs(self.appPath)
 			except:
 				err=True
 		if os.path.isfile(app):
