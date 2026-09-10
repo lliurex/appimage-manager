@@ -43,6 +43,8 @@ class appmanager():
 							data['name']=line.split("=")[-1].strip()
 						if line.startswith("Icon"):
 							data['icon']=line.split("=")[-1].strip()
+							data['icon']=data["icon"].removesuffix(".png")
+							data['icon']=data["icon"].removesuffix(".svg")
 						if line.startswith("Comment="):
 							data['desc']=line.split("=")[-1].strip()
 			except Exception as e:
