@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from QtExtraWidgets import QStackedWindow
 import gettext
 gettext.textdomain('appimage-manager')
@@ -18,4 +18,4 @@ config.setIcon("appimage-manager")
 config.show()
 config.setMinimumWidth(config.width()*1.3)
 config.setMinimumHeight(config.width()*0.7)
-app.exec_()
+app.exec()

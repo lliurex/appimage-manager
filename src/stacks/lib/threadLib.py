@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from PySide2.QtCore import QThread
+from PySide6.QtCore import QThread
 import subprocess
 
 class exeApp(QThread):

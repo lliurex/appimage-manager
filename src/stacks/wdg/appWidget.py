@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from PySide2.QtWidgets import QLabel, QWidget, QPushButton,QGridLayout, QHeaderView
-from PySide2 import QtGui
-from PySide2.QtCore import Qt,QSize,Signal,QThread
+from PySide6.QtWidgets import QLabel, QWidget, QPushButton,QGridLayout, QHeaderView
+from PySide6 import QtGui
+from PySide6.QtCore import Qt,QSize,Signal,QThread
 from lib.threadLib import exeApp
 from extras.i18n import *
 

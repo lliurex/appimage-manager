@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import os
 import subprocess
-from PySide2.QtWidgets import QLabel, QGridLayout,QTableWidget,QHeaderView
-from PySide2.QtCore import Qt
+from PySide6.QtWidgets import QLabel, QGridLayout,QTableWidget,QHeaderView
+from PySide6.QtCore import Qt
 from QtExtraWidgets import QStackedWindowItem
 from lib.libappmanager import appmanager as appmanager
 from wdg.appWidget import appWidget
