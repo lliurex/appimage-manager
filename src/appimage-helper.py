@@ -10,19 +10,19 @@ dbg=False
 
 def _debug(msg):
 	if dbg:
-		print("Helper: %s"%msg)
+		print("Helper: {}".format(msg))
 #def _debug
 
 if sys.argv[1]=='install':
-	_debug("Installing %s %s"%(sys.argv[2],sys.argv[3]))
+	_debug("Installing {0} {1}".format(sys.argv[2],sys.argv[3]))
 	appimage=sys.argv[2]
 	path=sys.argv[3]
 	desktop_name=sys.argv[4]
 	desktop_icon=sys.argv[5]
 	desktop_comment=sys.argv[6]
-	desktop_categories=["%s"%sys.argv[7]]
+	desktop_categories=["{}".format(sys.argv[7])]
 	desktop_exe=sys.argv[8]
-	_debug("Name: %s\nIcon: %s"%(desktop_name,desktop_icon))
+	_debug("Name: {0}\nIcon: {1}".format(desktop_name,desktop_icon))
 	#install app
 	os.chmod(appimage,0o755)
 	shutil.copy2(appimage,path)
@@ -41,7 +41,7 @@ if sys.argv[1]=='install':
 		subprocess.check_call(['gtk-update-icon-cache','/usr/share/icons/hicolor/'])
 	except:
 		err=2
-	_debug("Installed %s %s"%(sys.argv[2],sys.argv[3]))
+	_debug("Installed {0} {1}".format(sys.argv[2],sys.argv[3]))
 elif sys.argv[1]=='run':
 	appimage=sys.argv[2]
 	try:
@@ -55,10 +55,11 @@ elif sys.argv[1]=='run':
 elif sys.argv[1]=='remove':
 	appimage=sys.argv[2]
 	#Remove the desktop (if any)
-	desk_name=os.path.basename(appimage)
-	desk_name=desk_name.replace(" ","_")
-	if os.path.isfile("/usr/share/applications/%s.desktop"%desk_name):
-		os.remove("/usr/share/applications/%s.desktop"%desk_name)
-	os.remove(appimage)
+	deskName=os.path.basename(appimage)
+	deskName=deskName.replace(" ","_")
+	deskPath="/usr/share/applications/{}.desktop".format(deskName)
+	if os.path.isfile(deskPath):
+		os.unlink(deskPath)
+	os.unlink(appimage)
 exit(err)
 

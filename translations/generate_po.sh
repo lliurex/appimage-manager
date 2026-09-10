@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PYTHON_FILES="../src/*.py"
+PYTHON_FILES="../src/*.py ../src/stacks/*.py"
 
 mkdir -p appimage-manager/
 
