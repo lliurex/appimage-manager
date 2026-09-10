@@ -2,47 +2,21 @@
 import os
 import subprocess
 from PySide2.QtWidgets import QLabel, QGridLayout,QTableWidget,QHeaderView
-from PySide2.QtCore import Qt,QThread
+from PySide2.QtCore import Qt
 from QtExtraWidgets import QStackedWindowItem
-from stacks.lib.libappmanager import appmanager as appmanager
+from lib.libappmanager import appmanager as appmanager
 from wdg.appWidget import appWidget
 from app2menu import App2Menu
-
-import gettext
-_ = gettext.gettext
-
-i18n={"APP_UNINSTALLED":_("Uninstalled: "),
-	"APPLAUNCH":_("Launch"),
-	"APPREMOVE":_("Remove"),
-	"ERR_NOAPP":_("There're no appimages availables"),
-	"MENU":_("Manage"),
-	"MENU_DESC":_("Manage appimages"),
-	"MENU_TOOLTIP":_("Manage installed appimages"),
-	}
-
-class exeApp(QThread):
-	def __init__(self,parent=None):
-		super (exeApp,self).__init__(parent)
-		self.app=None
-	#def __init__
-
-	def setApp(self,app):
-		self.app=app
-	#def setApp
-
-	def run(self):
-		subprocess.run(self.app,stdin=None,stdout=None,stderr=None,shell=False)
-	#def run
-#class exeApp
+from extras.i18n import *
 
 class manager(QStackedWindowItem):
 	def __init_stack__(self):
 		self.dbg=False
 		self._debug("manager load")
-		self.setProps(shortDesc=i18n["MENU"],
-			longDesc=i18n["MENU_DESC"],
+		self.setProps(shortDesc=i18n["MANAGER_MENU"],
+			longDesc=i18n["MANAGER_MENU_DESC"],
 			icon="systemsettings",
-			tooltip=_("Add custom repositories"),
+			tooltip=i18n["MANAGER_TOOLTIP"],
 			index=1,
 			visible=True)
 		self.hideControlButtons()
