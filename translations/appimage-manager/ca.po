@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 09:57+0200\n"
-"PO-Revision-Date: 2026-09-01 10:01+0200\n"
+"POT-Creation-Date: 2026-10-07 11:44+0200\n"
+"PO-Revision-Date: 2026-10-07 11:46+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ca_ES\n"
@@ -16,75 +16,83 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.0.1\n"
 
-#: ../src/stacks/installApp.py:12
+#: ../src/stacks/extras/i18n.py:6
 msgid "Choose appimage to add"
 msgstr "Triar appimage a afegir"
 
-#: ../src/stacks/installApp.py:13
+#: ../src/stacks/extras/i18n.py:7
 msgid "Application description"
 msgstr "Descripció"
 
-#: ../src/stacks/installApp.py:14
+#: ../src/stacks/extras/i18n.py:8
 msgid "Appication name"
 msgstr "Nom"
 
-#: ../src/stacks/installApp.py:15
-msgid "Push for icon change"
-msgstr "Canviar icona"
-
-#: ../src/stacks/installApp.py:16
-msgid "Installed"
-msgstr "Instal·lada"
-
-#: ../src/stacks/installApp.py:17
-msgid "Install failed: "
-msgstr "Ha fallat la instal·lació:"
-
-#: ../src/stacks/installApp.py:18
-msgid "Add Appimage"
-msgstr "Afegir appimage"
-
-#: ../src/stacks/installApp.py:19
-msgid "Add appimages"
-msgstr "Afegir appimages"
-
-#: ../src/stacks/installApp.py:20
-msgid "Add downloaded appimages as system applications"
-msgstr "Afegir appimages com a aplicació del sistema"
-
-#: ../src/stacks/manager.py:16
+#: ../src/stacks/extras/i18n.py:9
 msgid "Uninstalled: "
 msgstr "No instal·lada"
 
-#: ../src/stacks/manager.py:17
+#: ../src/stacks/extras/i18n.py:10
 msgid "Launch"
 msgstr "Obrir"
 
-#: ../src/stacks/manager.py:18
+#: ../src/stacks/extras/i18n.py:11
 msgid "Remove"
 msgstr "Eliminar"
 
-#: ../src/stacks/manager.py:19
+#: ../src/stacks/extras/i18n.py:12
+msgid "Push for icon change"
+msgstr "Canviar icona"
+
+#: ../src/stacks/extras/i18n.py:13
 msgid "There're no appimages availables"
 msgstr "No hi ha cap appimage disponible"
 
-#: ../src/stacks/manager.py:20
+#: ../src/stacks/extras/i18n.py:14
+msgid "Installed"
+msgstr "Instal·lada"
+
+#: ../src/stacks/extras/i18n.py:15
+msgid "Install failed: "
+msgstr "Ha fallat la instal·lació:"
+
+#: ../src/stacks/extras/i18n.py:16
+msgid "Add Appimage"
+msgstr "Afegir appimage"
+
+#: ../src/stacks/extras/i18n.py:17
+msgid "Add appimages"
+msgstr "Afegir appimages"
+
+#: ../src/stacks/extras/i18n.py:18
+msgid "Add downloaded appimages as system applications"
+msgstr "Afegir appimages com a aplicació del sistema"
+
+#: ../src/stacks/extras/i18n.py:19
 msgid "Manage"
 msgstr "Gestiona"
 
-#: ../src/stacks/manager.py:21
+#: ../src/stacks/extras/i18n.py:20
 msgid "Manage appimages"
 msgstr "Gestiona appimages"
 
-#: ../src/stacks/manager.py:22
+#: ../src/stacks/extras/i18n.py:21
 msgid "Manage installed appimages"
 msgstr "Gestiona appimages instaŀlades"
 
-#: ../src/stacks/manager.py:153
+#: ../src/stacks/extras/i18n.py:22
 msgid "Add custom repositories"
 msgstr "Afegir repositoris personals"
+
+#: ../src/stacks/extras/i18n.py:23
+msgid "Uninstalled"
+msgstr "Desinstalada"
+
+#: ../src/stacks/extras/i18n.py:24
+msgid "Should be uninstalled from store"
+msgstr "Cal desinstaŀlarla desde la Botiga"
 
 #, python-format
 #~ msgid "Removed %s"
