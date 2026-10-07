@@ -4,29 +4,20 @@ from PySide2.QtWidgets import QApplication, QLabel, QPushButton,QLineEdit,QGridL
 from PySide2 import QtGui
 from PySide2.QtCore import Qt,QSize
 from QtExtraWidgets import QStackedWindowItem
-from stacks.lib.libappmanager import appmanager as appmanager
+from lib.libappmanager import appmanager as appmanager
+from extras.i18n import *
 
 import gettext
 _ = gettext.gettext
 
-i18n={"APP_ADD":_("Choose appimage to add"),
-	"APP_DESC":_("Application description"),
-	"APP_NAME":_("Appication name"),
-	"BTN_ICON_TOOLTIP":_("Push for icon change"),
-	"INSTALL_OK":_("Installed"),
-	"INSTALL_KO":_("Install failed: "),
-	"MENU":_("Add Appimage"),
-	"MENU_DESC":_("Add appimages"),
-	"MENU_TOOLTIP":_("Add downloaded appimages as system applications"),
-	}
 class installApp(QStackedWindowItem):
 	def __init_stack__(self):
 		self.dbg=False
 		self._debug("addApp load")
-		self.setProps(shortDesc=i18n["MENU"],
-			longDesc=i18n["MENU_DESC"],
+		self.setProps(shortDesc=i18n["INSTALLER_MENU"],
+			longDesc=i18n["INSTALLER_MENU_DESC"],
 			icon="install",
-			tooltip=i18n["MENU_TOOLTIP"],
+			tooltip=i18n["INSTALLER_MENU_TOOLTIP"],
 			index=2,
 			visible=True)
 		self.setStyleSheet(self._setCss())
