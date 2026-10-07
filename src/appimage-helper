@@ -1,0 +1,59 @@
+#!/bin/bash
+
+inspect_appimage()
+{
+	WRKDIR=$(mktemp -d)
+	chmod +x $FULL_NAME
+	cd $WRKDIR
+	$FULL_NAME --appimage-extract *.desktop
+	DESKTOP_F=$(find . -name "*.desktop" -print -quit)
+	ICON=$(grep Icon $DESKTOP_F | cut -d "=" -f2)
+	$FULL_NAME --appimage-extract ${ICON}*
+	ICON_F=$(find . -name "${ICON}.png" -print -quit)
+	ICON_L=$(readlink $ICON_F || echo -n $ICON_F)
+	$FULL_NAME --appimage-extract ${ICON_L}
+	ICON_NAME=$(basename $ICON_F)
+	ICON_PATH=/opt/appimages/icons/${ICON_NAME}
+}
+
+install_appimage()
+{
+	inspect_appimage
+	cp ${WRKDIR}/${ICON_F} $ICON_PATH
+	FULL_NAME_SCAPED=${FULL_NAME//\//\\/}
+	ICON_PATH_SCAPED=${ICON_PATH//\//\\/}
+	sed -i "s/Exec=.*/Exec=$FULL_NAME_SCAPED/g" $DESKTOP_F
+	sed -i "s/Icon=.*/Icon=$ICON_PATH_SCAPED/g" $DESKTOP_F
+	/usr/bin/desktop-file-install $DESKTOP_F
+	cd $OLDPWD
+	rm -fr $WRKDIR
+}
+
+remove_appimage()
+{
+	[ -e $FULL_NAME ] || exit 3
+	inspect_appimage
+	DESKTOP_F=$(basename $DESKTOP_F)
+	rm /usr/share/applications/${DESKTOP_F}
+	rm $ICON_PATH
+	rm $FULL_NAME 
+}
+
+download_appimage()
+{
+	wget $URL -O $FULL_NAME
+}
+
+mkdir -p /opt/appimages/icons || true
+if [[ $1 == "install" ]]
+then
+	URL=$2
+	NAME=$(basename $2)
+	FULL_NAME=/opt/appimages/${NAME}.appimage
+	download_appimage
+	install_appimage
+else
+	NAME=$(basename $2)
+	FULL_NAME=/opt/appimages/${NAME}.appimage
+	remove_appimage
+fi
