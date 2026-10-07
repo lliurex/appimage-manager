@@ -1,3 +1,11 @@
+appimage-manager (1.5.0) jammy; urgency=medium
+
+  * Add cli options
+  * Remove deprecated binaries
+  * Refactorize code
+
+ -- Juanma1980 <juanma1980@gmail.com>  Wed, 07 Oct 2026 11:00:37 +0200
+
 appimage-manager (1.4.0+0llx23) jammy; urgency=medium
 
   * Sync with noble
