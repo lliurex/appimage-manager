@@ -29,6 +29,7 @@ class manager(QStackedWindowItem):
 					os.path.join(os.environ["HOME"],"AppImages"),
 					os.path.join(os.environ["HOME"],"Appimages"),
 					os.path.join(os.environ["HOME"],".local","bin"),
+					"/opt/appimages",
 					"/usr/local/bin"]
 	#def __init__
 	
