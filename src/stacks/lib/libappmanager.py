@@ -58,6 +58,13 @@ class appmanager():
 				cmd=[app,"--appimage-extract",imgFile]
 				subprocess.run(cmd)
 				icn=os.path.join("/tmp","squashfs-root",imgFile)
+				self._debug("Examining icon {}".format(icn))
+				if os.path.islink(icn)==True:
+					icn=os.readlink(icn)
+					cmd=[app,"--appimage-extract",icn]
+					subprocess.run(cmd)
+					icn=os.path.join("/tmp","squashfs-root",icn)
+				self._debug("Examining icon {}".format(icn))
 				if os.path.exists(icn):
 					self._debug("Icon found at {}".format(imgFile))
 					data['icon']=QIcon(icn)
