@@ -86,14 +86,15 @@ class manager(QStackedWindowItem):
 	def writeConfig(self):
 		if self.widget=='':
 			return
-		self.appmanager.localRemove(self.widget.getApp())
-		self.showMsg("{0} {1}".format(i18n ["APP_UNINSTALLED"],self.widget.getName()))
-		self.updateScreen()
 	#def writeConfig
 
 	def _removeApp(self,widget):
 		self.widget=widget
-		self.writeConfig()
+		if self.appmanager.localRemove(self.widget.getApp()):
+			self.showMsg("{0} {1}".format(i18n ["UNINSTALL_OK"],self.widget.getName()))
+		else:
+			self.showMsg("{1}: {0}".format(i18n ["UNINSTALL_KO"],self.widget.getName()))
+		self.updateScreen()
 	#def _removeApp
 
 	def _setCss(self):

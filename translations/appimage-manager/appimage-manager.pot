@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 09:57+0200\n"
+"POT-Creation-Date: 2026-10-07 11:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,70 +17,78 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/stacks/installApp.py:12
+#: ../src/stacks/extras/i18n.py:6
 msgid "Choose appimage to add"
 msgstr ""
 
-#: ../src/stacks/installApp.py:13
+#: ../src/stacks/extras/i18n.py:7
 msgid "Application description"
 msgstr ""
 
-#: ../src/stacks/installApp.py:14
+#: ../src/stacks/extras/i18n.py:8
 msgid "Appication name"
 msgstr ""
 
-#: ../src/stacks/installApp.py:15
-msgid "Push for icon change"
-msgstr ""
-
-#: ../src/stacks/installApp.py:16
-msgid "Installed"
-msgstr ""
-
-#: ../src/stacks/installApp.py:17
-msgid "Install failed: "
-msgstr ""
-
-#: ../src/stacks/installApp.py:18
-msgid "Add Appimage"
-msgstr ""
-
-#: ../src/stacks/installApp.py:19
-msgid "Add appimages"
-msgstr ""
-
-#: ../src/stacks/installApp.py:20
-msgid "Add downloaded appimages as system applications"
-msgstr ""
-
-#: ../src/stacks/manager.py:16
+#: ../src/stacks/extras/i18n.py:9
 msgid "Uninstalled: "
 msgstr ""
 
-#: ../src/stacks/manager.py:17
+#: ../src/stacks/extras/i18n.py:10
 msgid "Launch"
 msgstr ""
 
-#: ../src/stacks/manager.py:18
+#: ../src/stacks/extras/i18n.py:11
 msgid "Remove"
 msgstr ""
 
-#: ../src/stacks/manager.py:19
+#: ../src/stacks/extras/i18n.py:12
+msgid "Push for icon change"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:13
 msgid "There're no appimages availables"
 msgstr ""
 
-#: ../src/stacks/manager.py:20
+#: ../src/stacks/extras/i18n.py:14
+msgid "Installed"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:15
+msgid "Install failed: "
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:16
+msgid "Add Appimage"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:17
+msgid "Add appimages"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:18
+msgid "Add downloaded appimages as system applications"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:19
 msgid "Manage"
 msgstr ""
 
-#: ../src/stacks/manager.py:21
+#: ../src/stacks/extras/i18n.py:20
 msgid "Manage appimages"
 msgstr ""
 
-#: ../src/stacks/manager.py:22
+#: ../src/stacks/extras/i18n.py:21
 msgid "Manage installed appimages"
 msgstr ""
 
-#: ../src/stacks/manager.py:153
+#: ../src/stacks/extras/i18n.py:22
 msgid "Add custom repositories"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:23
+msgid "Uninstalled"
+msgstr ""
+
+#: ../src/stacks/extras/i18n.py:24
+msgid "Should be uninstalled from store"
 msgstr ""

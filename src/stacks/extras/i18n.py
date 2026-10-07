@@ -19,5 +19,7 @@ i18n={
 	"MANAGER_MENU":_("Manage"),
 	"MANAGER_MENU_DESC":_("Manage appimages"),
 	"MANAGER_MENU_TOOLTIP":_("Manage installed appimages"),
-	"MANAGER_TOOLTIP":_("Add custom repositories")
+	"MANAGER_TOOLTIP":_("Add custom repositories"),
+	"UNINSTALL_OK":_("Uninstalled"),
+	"UNINSTALL_KO":_("Should be uninstalled from store")
 	}
